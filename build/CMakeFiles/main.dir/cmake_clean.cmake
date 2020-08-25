@@ -4,6 +4,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/main.dir/src/RadioActiveSource.cpp.o"
   "CMakeFiles/main.dir/src/RunData.cpp.o"
   "CMakeFiles/main.dir/src/TAORunData.cpp.o"
+  "CMakeFiles/main.dir/src/test.cpp.o"
   "main"
   "main.pdb"
 )

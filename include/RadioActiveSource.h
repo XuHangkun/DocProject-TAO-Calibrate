@@ -44,6 +44,7 @@
 #include <string>
 #include "TGraph.h"
 #include <vector>
+#include <iostream>
 /**
  * @brief:  model of radio active source
  */
@@ -63,6 +64,7 @@ private:
     float initialELeapFrac;
     float matchMean;
     TGraph* gr_ELeap;
+
 public:
     RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight);
     ~RadioActiveSource();
@@ -94,9 +96,10 @@ public:
     //Get unique label
     std::string GetSourceLabel();
 
+    //Output
+    friend std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS); 
+
 };
-
-
 
 
 

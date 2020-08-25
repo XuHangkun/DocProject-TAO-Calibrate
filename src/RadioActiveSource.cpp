@@ -3,6 +3,7 @@
 #include "globals.h"
 #include <vector>
 #include <sstream>
+#include <iostream>
 
 RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight)
 {
@@ -37,6 +38,7 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
     initialSigma=0;
     initialELeapFrac=0;
     matchMean=0;
+    ReadInitialFitPars();   //read from xml file
     std::stringstream fmt;
     fmt<<ANATOP<<"/input/ELeapSpec/"<<source<<"_"<<calibHeight<<"mm_EleapSpec.txt";
     gr_ELeap=new TGraph(fmt.str().c_str());
@@ -47,22 +49,73 @@ RadioActiveSource::~RadioActiveSource()
     delete gr_ELeap;
 }
 
-#include "TDOMParser.h"
-#include "TXMLAttr.h"
-#include "TXMLNode.h"
-#include "TList.h"
+#include "TXMLEngine.h"
 void RadioActiveSource::ReadInitialFitPars()
 {
-    /*
+    using namespace std;
+    
     std::string lowSource=source;
     for(int i=0;i<lowSource.size();i++) lowSource[i]=tolower(lowSource[i]);
-    std::string xmlFile=ANATOP+Form("/xml/%sfitpars.xml",lowSource.c_str());
-    TDOMParser *domParser=new TDOMParser();
-    domParser->ParseFile(xmlFile.c_str());
-    TXMLNode* rootNode=domParser->GetXMLDocument()->GetRootNode();
-    TXMLNode* sourceNode=rootNode->GetChildren();  //Get Source Node
+    std::string xmlFile=ANATOP+Form("/input/xml/%sfitpars.xml",lowSource.c_str());
+    TXMLEngine xml;
+    XMLDocPointer_t xmldoc=xml.ParseFile(xmlFile.c_str());
+    XMLNodePointer_t node=xml.DocGetRootElement(xmldoc);     //root Node
+ 
+    //Find Source Node
+    
+    while(strcmp(xml.GetNodeName(node),"Source") != 0 ){
+        node = xml.GetChild(node);
+        if( node == 0 ){
+            break;
+        }
+    }
 
-    delete domParser;*/
+    
+    //FitPars Node
+    node=xml.GetChild(node); 
+
+    //find right calibhight node
+    while(node != 0){
+        XMLAttrPointer_t attr=xml.GetFirstAttr(node);
+
+        //Find CalibHeight Attribute
+        while(attr != 0){
+            if(strcmp(xml.GetAttrName(attr),"CalibHeight") == 0){
+                break;
+            }else{
+                attr = xml.GetNextAttr(attr);
+            }
+        }
+
+        if(atoi(xml.GetAttrValue(attr)) == calibHeight){
+            break;
+        }else
+        {
+            node = xml.GetNext(node);
+        }
+    
+    }
+
+    //now we get the right node
+    node = xml.GetChild(node);
+    while (node != 0 )
+    {
+        XMLAttrPointer_t attr=xml.GetFirstAttr(node);
+        if(strcmp(xml.GetNodeName(node),"Amp") == 0) {
+            initialAmp=atof(xml.GetAttrValue(attr));
+        }else if(strcmp(xml.GetNodeName(node),"Mean") == 0){
+            initialMean=atof(xml.GetAttrValue(attr));
+        }else if(strcmp(xml.GetNodeName(node),"Sigma") == 0){
+            initialSigma=atof(xml.GetAttrValue(attr));
+        }else if(strcmp(xml.GetNodeName(node),"ELeapFrac") == 0){
+            initialELeapFrac=atof(xml.GetAttrValue(attr));
+        }else if(strcmp(xml.GetNodeName(node),"MatchMean") == 0){
+            matchMean=atof(xml.GetAttrValue(attr));
+        }
+        node=xml.GetNext(node);
+    }
+    
+    xml.FreeDoc(xmldoc);   
 }
 
 double RadioActiveSource::Gaus(double* x,double* par)
@@ -125,4 +178,23 @@ std::string RadioActiveSource::GetSourceLabel()
     stringstream fmt;
     fmt<<source<<"_CalibHeight-"<<calibHeight;
     return fmt.str();
+}
+
+std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS)
+{
+    using namespace std;
+    
+    os<<"------------------------------------------------------"<<endl;
+    os<<"Source Name : "<<radioAS.source<<endl;
+    os<<"Calibration Height : "<<radioAS.calibHeight<<endl;
+    os<<"Gamma Energy : "<<radioAS.gammaEnergy<<"[MeV]"<<endl;
+    os<<"Number of root file : "<<radioAS.NFile<<endl;
+    os<<"Initial fitting parameters : "<<endl;
+    os<<"                           Amp: "<<radioAS.initialAmp<<endl;
+    os<<"                           Mean: "<<radioAS.initialMean<<endl;
+    os<<"                           Sigma: "<<radioAS.initialSigma<<endl;
+    os<<"                           Energy Leap Fraction: "<<radioAS.initialELeapFrac<<endl;
+    os<<"                           Match Mean: "<<radioAS.matchMean<<endl; 
+    os<<"------------------------------------------------------"<<endl;
+    return os;
 }

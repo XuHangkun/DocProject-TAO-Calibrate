@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 add_library(mylib SHARED ${sources})
-target_link_libraries(mylib ${ROOT_LIBRARIES})
+target_link_libraries(mylib ${ROOT_LIBRARIES} -lXMLIO)
 
 add_executable(main main.C ${sources})
 target_link_libraries(main mylib)

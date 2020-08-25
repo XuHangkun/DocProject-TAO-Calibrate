@@ -3,37 +3,24 @@
 <!ELEMENT SourceList (Source)+>
 
 <!ELEMENT Source (FitPars)+>
-<!ATTLIST Source
-    Name PCDATA #REQUIRED
->
+<!ATTLIST Source Name CDATA (#REQUIRED)>
 
 <!ELEMENT FitPars (Amp, Mean, Sigma, LeapFrac, MatchMean)>
-<!ATTLIST FitPars 
-    Function PCDATA #REQUIRED
-    CalibHeight PCDATA #REQUIRED
->
+<!ATTLIST FitPars Function CDATA (#REQUIRED)>
+<!ATTLIST FitPars CalibHeight CDATA (#REQUIRED)>
+
 
 <!ELEMENT Amp>
-<!ATTLIST Amp
-    value PCDATA #REQUIRED
->
+<!ATTLIST Amp value CDATA (#REQUIRED)>
 
 <!ELEMENT Mean>
-<!ATTLIST Mean
-    value PCDATA #REQUIRED
->
+<!ATTLIST Mean value PCDATA (#REQUIRED)>
 
 <!ELEMENT Sigma>
-<!ATTLIST Sigma
-    value PCDATA #REQUIRED
->
+<!ATTLIST Sigma value PCDATA (#REQUIRED)>
 
 <!ELEMENT LeapFrac>
-<!ATTLIST LeapFrac
-    value PCDATA #REQUIRED
->
+<!ATTLIST LeapFrac value PCDATA (#REQUIRED)>
 
 <!ELEMENT MatchMean>
-<!ATTLIST MatchMean
-    value PCDATA #REQUIRED
->
+<!ATTLIST MatchMean value PCDATA (#REQUIRED)>

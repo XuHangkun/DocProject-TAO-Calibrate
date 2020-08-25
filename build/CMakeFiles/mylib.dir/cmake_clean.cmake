@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/mylib.dir/src/RadioActiveSource.cpp.o"
   "CMakeFiles/mylib.dir/src/RunData.cpp.o"
   "CMakeFiles/mylib.dir/src/TAORunData.cpp.o"
+  "CMakeFiles/mylib.dir/src/test.cpp.o"
   "libmylib.pdb"
   "libmylib.so"
 )
