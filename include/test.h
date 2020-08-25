@@ -6,4 +6,6 @@
 //Test Class RadioActiveSource
 void TestRadioActiveSource();
 
+//Test Class TAORunData
+void TestTAORunData();
 #endif

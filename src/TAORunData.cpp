@@ -2,14 +2,17 @@
 #include "RadioActiveSource.h"
 #include "TChain.h"
 #include <string>
+#include <vector>
 #include "TH1F.h"
 #include "TF1.h"
+#include <iostream>
 
 TAORunData::TAORunData(std::string inSource,int inNFile,int inCalibHeight)
 {
     source=inSource;
     calibHeight=inCalibHeight;
     radioActiveSource=new RadioActiveSource(source,inNFile,calibHeight);
+    Initialize();
 
 }
 
@@ -22,15 +25,21 @@ TAORunData::~TAORunData()
 void TAORunData::Initialize()
 {
     //create the TChain
-    mainTree=new TChain("mainTree");
-    mainTree->AddFriend("event_tree");
-    mainTree->AddFriend("fmuon");
+    mainTree=new TChain("fSiPMTree");
+    TChain* event_tree=new TChain("event_tree");
+    TChain* fmuon=new TChain("fmuon");
     std::vector<std::string> fileNames=radioActiveSource->GetFileNames();
     for(int i=0;i<fileNames.size();i++){
+        std::cout<<fileNames[i]<<std::endl;
         mainTree->Add(fileNames[i].c_str());
+        event_tree->Add(fileNames[i].c_str());
+        fmuon->Add(fileNames[i].c_str());
     }
+    mainTree->AddFriend("event_tree");
+    mainTree->AddFriend("fmuon");
 
     NEtries=mainTree->GetEntries();
+    std::cout<<NEtries<<std::endl;    
     mainTree->SetBranchStatus("*",kFALSE);
 
     capTime=0;
@@ -52,8 +61,8 @@ void TAORunData::Initialize()
     mainTree->SetBranchAddress("event_tree.miniJUNOGdLSEdep",&Edep);
 
     NParticles=0;
-    mainTree->SetBranchStatus("event_tree.vertex.n_particles",kTRUE);
-    mainTree->SetBranchAddress("event_tree.vertex.n_particles",&NParticles);
+    mainTree->SetBranchStatus("vertex.n_particles",kTRUE);
+    mainTree->SetBranchAddress("vertex.n_particles",&NParticles);
 
 
     EDepCenterX=0;
@@ -92,6 +101,8 @@ TH1F* TAORunData::GetHistOfTotalPE(bool ifFit)
     int NBins=radioActiveSource->GetTotalPEHistNBins();
     std::string histName="Hist_"+radioActiveSource->GetSourceLabel();
     TH1F* hist=new TH1F(histName.c_str(),histName.c_str(),NBins,x_min,x_max);
+    hist->GetXaxis()->SetTitle("Total PE");
+    hist->GetYaxis()->SetTitle("Count");
     for(int i=0;i<NEtries;i++){
         GetEntry(i);
         hist->Fill(totalPE);
@@ -110,4 +121,10 @@ TH1F* TAORunData::GetHistOfTotalPE(bool ifFit)
 void TAORunData::Finalize()
 {
     delete mainTree;
+}
+
+std::ostream & operator<<(std::ostream & os, const TAORunData TAORun)
+{
+    using namespace std;
+    return os;
 }

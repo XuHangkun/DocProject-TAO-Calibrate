@@ -176,7 +176,7 @@ std::string RadioActiveSource::GetSourceLabel()
 {
     using std::stringstream;
     stringstream fmt;
-    fmt<<source<<"_CalibHeight-"<<calibHeight;
+    fmt<<source<<"_CalibHeight-"<<calibHeight<<"mm";
     return fmt.str();
 }
 

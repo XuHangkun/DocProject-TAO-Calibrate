@@ -3,5 +3,6 @@
 int main(void)
 {
     using namespace std;
-    TestRadioActiveSource();
+    TestTAORunData();
+    //TestRadioActiveSource();
 }
