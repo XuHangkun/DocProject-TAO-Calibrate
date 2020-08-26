@@ -149,12 +149,8 @@ TH1F* TAORunData::GetHistOfTotalPE(bool ifFit)
         ASBkg(hist);
     }
     if(ifFit){
-        TF1 * f = new TF1("MCShape",radioActiveSource,&RadioActiveSource::MCShape,x_min,x_max,radioActiveSource->GetNPars(),"RadioActiveSource","MCShape");   // create TF1 class.
-        f->SetParameter(0,radioActiveSource->GetInitialAmp());
-        f->SetParameter(1,radioActiveSource->GetInitialMean());
-        f->SetParameter(2,radioActiveSource->GetInitialSigma());
-        f->SetParameter(3,radioActiveSource->GetInitialELeapFrac());
-        hist->Fit(f,"");
+
+        hist->Fit(radioActiveSource->GetTFMCShape(),"");
     }
     return hist;
 }

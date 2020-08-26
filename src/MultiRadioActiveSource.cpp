@@ -27,7 +27,22 @@ MultiRadioActiveSource::MultiRadioActiveSource(std::vector<std::string> inSource
         }
         
     }
-    
+
+    //Initia        tfTotalMCShape
+    tfTotalMCShape=new TF1("MCShape",this,&MultiRadioActiveSource::TotalMCShape,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY,NPars,"MultiRadioActiveSource","TotalMCShape");
+    //Set Initial Parameters
+    int currentPar=0;
+    for(int i=0;i<sources.size();i++){
+        currentPar=i*4;
+        tfTotalMCShape->SetParameter(currentPar,radioActiveSources[i]->GetInitialAmp());
+        tfTotalMCShape->SetParName(currentPar,(sources[i]+"_Amplitude").c_str());
+        tfTotalMCShape->SetParameter(currentPar+1,radioActiveSources[i]->GetInitialMean());
+        tfTotalMCShape->SetParName(currentPar+1,(sources[i]+"_Gaus_Mean").c_str());
+        tfTotalMCShape->SetParameter(currentPar+2,radioActiveSources[i]->GetInitialSigma());
+        tfTotalMCShape->SetParName(currentPar+2,(sources[i]+"_Gaus_Sigma").c_str());
+        tfTotalMCShape->SetParameter(currentPar+3,radioActiveSources[i]->GetInitialELeapFrac());
+        tfTotalMCShape->SetParName(currentPar+3,(sources[i]+"_ELeapFrac.").c_str());
+    }    
 }
 
 MultiRadioActiveSource::MultiRadioActiveSource(std::string inSources[], int N,int NFile)
@@ -51,6 +66,22 @@ MultiRadioActiveSource::MultiRadioActiveSource(std::string inSources[], int N,in
         }
         
     }   
+
+    //Initia        tfTotalMCShape
+    tfTotalMCShape=new TF1("MCShape",this,&MultiRadioActiveSource::TotalMCShape,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY,NPars,"MultiRadioActiveSource","TotalMCShape");
+    //Set Initial Parameters
+    int currentPar=0;
+    for(int i=0;i<sources.size();i++){
+        currentPar=i*4;
+        tfTotalMCShape->SetParameter(currentPar,radioActiveSources[i]->GetInitialAmp());
+        tfTotalMCShape->SetParName(currentPar,(sources[i]+"_Amplitude").c_str());
+        tfTotalMCShape->SetParameter(currentPar+1,radioActiveSources[i]->GetInitialMean());
+        tfTotalMCShape->SetParName(currentPar+1,(sources[i]+"_Gaus_Mean").c_str());
+        tfTotalMCShape->SetParameter(currentPar+2,radioActiveSources[i]->GetInitialSigma());
+        tfTotalMCShape->SetParName(currentPar+2,(sources[i]+"_Gaus_Sigma").c_str());
+        tfTotalMCShape->SetParameter(currentPar+3,radioActiveSources[i]->GetInitialELeapFrac());
+        tfTotalMCShape->SetParName(currentPar+3,(sources[i]+"_ELeapFrac.").c_str());
+    }    
 }
 
 MultiRadioActiveSource::~MultiRadioActiveSource()
@@ -72,18 +103,7 @@ double MultiRadioActiveSource::TotalMCShape(double* x,double* pars)
     return value;
 }
 
-TF1* MultiRadioActiveSource::TFTotalMCShape()
+TF1* MultiRadioActiveSource::GetTFTotalMCShape()
 {
-
-    TF1* function=new TF1("MCShape",this,&MultiRadioActiveSource::TotalMCShape,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY,NPars,"MultiRadioActiveSource","TotalMCShape");
-    //Set Initial Parameters
-    int currentPar=0;
-    for(int i=0;i<sources.size();i++){
-        currentPar=i*4;
-        function->SetParameter(currentPar,radioActiveSources[i]->GetInitialAmp());
-        function->SetParameter(currentPar+1,radioActiveSources[i]->GetInitialMean());
-        function->SetParameter(currentPar+2,radioActiveSources[i]->GetInitialSigma());
-        function->SetParameter(currentPar+3,radioActiveSources[i]->GetInitialELeapFrac());
-    }
-    return function;
+    return tfTotalMCShape;
 }

@@ -60,9 +60,15 @@ private:
 
     //Number of Parameters
     int NPars; 
+
     //min gamma energy
     float minGammaEnergy;
     float maxGammaEnergy;
+
+    //MCShape function for fit
+    TF1* tfTotalMCShape;
+    
+
 
     
 public:
@@ -72,7 +78,7 @@ public:
 
     //MCShape function to fit total PE spectrum of multi. sources
     double TotalMCShape(double* x,double* pars);
-    TF1*   TFTotalMCShape();
+    TF1*   GetTFTotalMCShape();
 
     
 

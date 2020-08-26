@@ -18,7 +18,6 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *  @file     RunData.h                                                       *
-*  @brief    ABC of physics run data                                         *
 *  Details.                                                                  *
 *                                                                            *
 *  @author   Xu Hangkun                                                      *
@@ -45,6 +44,8 @@
 #include "TGraph.h"
 #include <vector>
 #include <iostream>
+#include "TF1.h"
+
 /**
  * @brief:  model of radio active source
  */
@@ -57,6 +58,7 @@ private:
     float gammaEnergy;   //Gamma Energy
 
     //Fit parameters
+    TF1* tfMCShape;
     int NPars;
     float initialAmp;
     float initialMean;
@@ -86,6 +88,7 @@ public:
     double Gaus(double* x,double* par);
     double ELeapSpec(double* x,double* par);
     double MCShape(double* x,double* par);
+    TF1* GetTFMCShape() { return tfMCShape; }
 
     //Get the range of total PE spectrum ( Min )
     float GetTotalPEHistXMin();

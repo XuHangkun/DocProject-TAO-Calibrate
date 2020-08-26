@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include "TF1.h"
 
 RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight)
 {
@@ -42,6 +43,18 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
     std::stringstream fmt;
     fmt<<ANATOP<<"/input/ELeapSpec/"<<source<<"_"<<calibHeight<<"mm_EleapSpec.txt";
     gr_ELeap=new TGraph(fmt.str().c_str());
+
+    //create tfMCShape and initialize the parameters
+    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*gammaEnergy*GAMMALY,1.2*gammaEnergy*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
+    tfMCShape->SetParameter(0,initialAmp);
+    tfMCShape->SetParName(0,"Amplitude");
+    tfMCShape->SetParameter(1,initialMean);
+    tfMCShape->SetParName(1,"Gaus_Mean");
+    tfMCShape->SetParameter(2,initialSigma);
+    tfMCShape->SetParName(2,"Gaus_Sigma");
+    tfMCShape->SetParameter(3,initialELeapFrac);
+    tfMCShape->SetParName(3,"ELeapFrac.");
+
 }
 
 RadioActiveSource::~RadioActiveSource()
