@@ -18,7 +18,6 @@
 *  limitations under the License.                                            *
 *                                                                            *
 *  @file     RunData.h                                                       *
-*  @brief    ABC of physics run data                                         *
 *  Details.                                                                  *
 *                                                                            *
 *  @author   Xu Hangkun                                                      *
@@ -38,70 +37,49 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef RADIOACTIVESOURCE
-#define RADIOACTIVESOURCE
+#ifndef MULTIRADIOACTIVESOURCE
+#define MULTIRADIOACTIVESOURCE 
 
+#include "RadioActiveSource.h"
 #include <string>
-#include "TGraph.h"
 #include <vector>
-#include <iostream>
+#include "TF1.h"
+
 /**
- * @brief:  model of radio active source
+ * @brief:  Model of several radio active sources which
+ *          are used for nonlinearity calibration
  */
-class RadioActiveSource
+class MultiRadioActiveSource
 {
 private:
-    std::string source;  //source name
-    int calibHeight;     //calibbration height
-    int NFile;
-    float gammaEnergy;   //Gamma Energy
+    //Names of radioactive sources
+    std::vector<std::string> sources;
 
-    //Fit parameters
-    int NPars;
-    float initialAmp;
-    float initialMean;
-    float initialSigma;
-    float initialELeapFrac;
-    float matchMean;
-    TGraph* gr_ELeap;
+    //all calibration height is set to 0mm
+    std::vector<RadioActiveSource*> radioActiveSources;
 
+    //Number of Parameters
+    int NPars; 
+    //min gamma energy
+    float minGammaEnergy;
+    float maxGammaEnergy;
+
+    
 public:
-    RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight=0);
-    ~RadioActiveSource();
+    MultiRadioActiveSource(std::vector<std::string> inSources,int Nfile);
+    MultiRadioActiveSource(std::string inSources[], int N,int NFile);
+    ~MultiRadioActiveSource();
 
-    int GetNPars() { return NPars; }
-    float GetInitialAmp() { return initialAmp; }
-    float GetInitialMean() { return initialMean; }
-    float GetInitialSigma() { return initialSigma; }
-    float GetInitialELeapFrac() { return initialELeapFrac; }
-    float GetGammaEnergy() { return gammaEnergy; }
+    //MCShape function to fit total PE spectrum of multi. sources
+    double TotalMCShape(double* x,double* pars);
+    TF1*   TFTotalMCShape();
 
-    //Manage files, return file list of root files
-    std::vector<std::string> GetFileNames();
-
-    //read xml file and get fit parameters
-    void ReadInitialFitPars();
-
-    //Gaus, ELeapSepc and totalSpec
-    double Gaus(double* x,double* par);
-    double ELeapSpec(double* x,double* par);
-    double MCShape(double* x,double* par);
-
-    //Get the range of total PE spectrum ( Min )
-    float GetTotalPEHistXMin();
-    //Get the range of total PE spectrum ( Max )
-    float GetTotalPEHistXMax();
-    //Get avaliable bin number of total PE spectrum
-    int GetTotalPEHistNBins();
-
-    //Get unique label
-    std::string GetSourceLabel();
-
-    //Output
-    friend std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS); 
+    
 
 };
 
 
 
+
 #endif
+

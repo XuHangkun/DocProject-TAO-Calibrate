@@ -121,8 +121,7 @@ void RadioActiveSource::ReadInitialFitPars()
 double RadioActiveSource::Gaus(double* x,double* par)
 {
     double energy=x[0];
-    double amp=par[0]/(sqrt(2*3.1415926)*par[2]);
-    return amp*exp(-0.5*pow((energy-par[1])/par[2],2));
+    return par[0]*exp(-0.5*pow((energy-par[1])/(par[1]*par[2]*0.01),2));
 }
 
 double RadioActiveSource::ELeapSpec(double* x,double* par)
@@ -134,7 +133,7 @@ double RadioActiveSource::ELeapSpec(double* x,double* par)
 
 double RadioActiveSource::MCShape(double* x,double* par)
 {
-    double gausPars[3]={par[0]*(1-par[3]),par[1],par[2]};
+    double gausPars[3]={par[0],par[1],par[2]};
     double gaus=Gaus(x,gausPars);
 
     double eleapPars[2]={par[0]*par[3],par[1]};

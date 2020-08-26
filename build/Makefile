@@ -210,6 +210,36 @@ src/GeneralFunction.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/GeneralFunction.cpp.s
 .PHONY : src/GeneralFunction.cpp.s
 
+src/MultiRadioActiveSource.o: src/MultiRadioActiveSource.cpp.o
+
+.PHONY : src/MultiRadioActiveSource.o
+
+# target to build an object file
+src/MultiRadioActiveSource.cpp.o:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/MultiRadioActiveSource.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/MultiRadioActiveSource.cpp.o
+.PHONY : src/MultiRadioActiveSource.cpp.o
+
+src/MultiRadioActiveSource.i: src/MultiRadioActiveSource.cpp.i
+
+.PHONY : src/MultiRadioActiveSource.i
+
+# target to preprocess a source file
+src/MultiRadioActiveSource.cpp.i:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/MultiRadioActiveSource.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/MultiRadioActiveSource.cpp.i
+.PHONY : src/MultiRadioActiveSource.cpp.i
+
+src/MultiRadioActiveSource.s: src/MultiRadioActiveSource.cpp.s
+
+.PHONY : src/MultiRadioActiveSource.s
+
+# target to generate assembly for a file
+src/MultiRadioActiveSource.cpp.s:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/MultiRadioActiveSource.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/MultiRadioActiveSource.cpp.s
+.PHONY : src/MultiRadioActiveSource.cpp.s
+
 src/RadioActiveSource.o: src/RadioActiveSource.cpp.o
 
 .PHONY : src/RadioActiveSource.o
@@ -346,6 +376,9 @@ help:
 	@echo "... src/GeneralFunction.o"
 	@echo "... src/GeneralFunction.i"
 	@echo "... src/GeneralFunction.s"
+	@echo "... src/MultiRadioActiveSource.o"
+	@echo "... src/MultiRadioActiveSource.i"
+	@echo "... src/MultiRadioActiveSource.s"
 	@echo "... src/RadioActiveSource.o"
 	@echo "... src/RadioActiveSource.i"
 	@echo "... src/RadioActiveSource.s"

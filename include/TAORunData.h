@@ -46,6 +46,9 @@
 #include <vector>
 #include "TH1F.h"
 #include "RadioActiveSource.h"
+#include <iostream>
+#include "TH1F.h"
+#include "TFile.h"
 
 
 /**
@@ -66,12 +69,18 @@ private:
     int NCompton;           //Numbers of compton scattering of a gamma
     float Edep;             //energy deposit in GdLS
     int NParticles;
+    bool isGamma;
     std::vector<int> PDGCode;   //pdg code of primary particles
     std::vector<double> hitTime; //hit time of photon on PMT
     float EDepCenterX;     //X value of energy deposit position
     float EDepCenterY;     //Y value of energy deposit position
     float EDepCenterZ;     //Z value of energy deposit position
     
+    int gammaNumber;       //The number of gamma used in calibration
+
+    bool ifASBkg;          //If consider background signal
+
+
 public:
     TAORunData(std::string inSource,int inNFile,int inCalibHeight=0);
     ~TAORunData();
@@ -81,6 +90,10 @@ public:
 
     /*Close the file*/
     virtual void Finalize();
+
+    /*set function*/
+    inline void SetGammaNumber(int inGammaN);
+    inline void SetIfASBkg(bool inIfASBkg);
 
     /*get function*/
     inline float GetCapTime();
@@ -94,14 +107,36 @@ public:
     inline float GetEdepCenterX();
     inline float GetEdepCenterY();
     inline float GetEdepCenterZ();
+    inline int   GetGammaNumber();
+    inline bool  GetIfASBkg();
 
     /*read n'th event in mainTree*/
     void GetEntry(int n);
 
     /*get histgrom of total PE*/
     TH1F* GetHistOfTotalPE(bool ifFit=false);
+    /*get total PE histogram of full energy peak*/
+    TH1F* GetHistOfFullEnergyPeak(bool ifFit=true);
+
+    /*Add and substract Bkg Effect*/
+    void AddBkg(TH1F* signal, float time=500);  //Add
+    void SubBkg(TH1F* signal,float time=500);  //Substract
+    void ASBkg(TH1F* signal,float time=500);   //Add and Sub
+
+    //Reload operator <<
+    friend std::ostream & operator<<(std::ostream & os, const TAORunData TAORun);
         
 };
+
+inline void TAORunData::SetGammaNumber(int inGammaN)
+{
+    gammaNumber=inGammaN;
+}
+
+inline void TAORunData::SetIfASBkg(bool inIfASBkg)
+{
+    ifASBkg=inIfASBkg;
+}
 
 inline int TAORunData::GetCurrentEntry()
 {
@@ -146,5 +181,15 @@ inline float TAORunData::GetEdepCenterY()
 inline float TAORunData::GetEdepCenterZ()
 {
     return EDepCenterZ;
+}
+
+inline int TAORunData::GetGammaNumber()
+{
+    return gammaNumber;
+}
+
+inline bool TAORunData::GetIfASBkg()
+{
+    return ifASBkg;
 }
 #endif

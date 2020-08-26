@@ -27,12 +27,13 @@ void TestTAORunData()
     using namespace std;
     //Set Draw Option
     //SetGlobalDrawOption();
-    TAORunData* testTAORun=new TAORunData("Ge68",10,0);
+    TAORunData* testTAORun=new TAORunData("Ge68",30,700);
+    testTAORun->SetIfASBkg(true);
     cout<<testTAORun<<endl;
-    TH1F* hist=testTAORun->GetHistOfTotalPE(true);
+    TH1F* hist=testTAORun->GetHistOfFullEnergyPeak(true);
     TCanvas* c1=new TCanvas("Test","Test");
     c1->Print((ANATOP+"/result/test.pdf]").c_str());
-    hist->Draw();
+    hist->Draw("E");
     c1->Print((ANATOP+"/result/test.pdf").c_str());
     c1->Print((ANATOP+"/result/test.pdf]").c_str());
 

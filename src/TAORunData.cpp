@@ -6,12 +6,19 @@
 #include "TH1F.h"
 #include "TF1.h"
 #include <iostream>
+#include "TFile.h"
+#include "globals.h"
 
 TAORunData::TAORunData(std::string inSource,int inNFile,int inCalibHeight)
 {
     source=inSource;
     calibHeight=inCalibHeight;
     radioActiveSource=new RadioActiveSource(source,inNFile,calibHeight);
+
+    isGamma=false;
+    ifASBkg=false;
+    gammaNumber=50000;   //defaultly we use 50000 gammas.
+
     Initialize();
 
 }
@@ -19,6 +26,8 @@ TAORunData::TAORunData(std::string inSource,int inNFile,int inCalibHeight)
 TAORunData::~TAORunData()
 {
     delete radioActiveSource;
+
+
     Finalize();
 }
 
@@ -80,8 +89,27 @@ void TAORunData::Initialize()
 
 void TAORunData::GetEntry(int n)
 {
+
+    int pdgs[5]={0};
+    mainTree->SetBranchStatus("vertex.pdg_code",kTRUE);
+    mainTree->SetBranchAddress("vertex.pdg_code",pdgs);
+
     mainTree->GetEntry(n);
     currentEntry=n;
+
+    //clean vector
+    //judge if the initial contains Gamma or contains positron
+    isGamma=false;
+    std::vector<int> tmp;
+    PDGCode.swap(tmp);
+    for(int i=0;i<NParticles;i++){
+        PDGCode.push_back(pdgs[i]);
+        if(pdgs[i]==22 || pdgs[i]==(-11)){
+            isGamma=true;
+        }
+    }
+    mainTree->SetBranchStatus("vertex.pdg_code",kFALSE);
+
 }
 
 std::vector<int>& TAORunData::GetPDGCode()
@@ -99,13 +127,26 @@ TH1F* TAORunData::GetHistOfTotalPE(bool ifFit)
     float x_min=radioActiveSource->GetTotalPEHistXMin();
     float x_max=radioActiveSource->GetTotalPEHistXMax();
     int NBins=radioActiveSource->GetTotalPEHistNBins();
-    std::string histName="Hist_"+radioActiveSource->GetSourceLabel();
+    std::string histName="TotalPE_"+radioActiveSource->GetSourceLabel();
     TH1F* hist=new TH1F(histName.c_str(),histName.c_str(),NBins,x_min,x_max);
     hist->GetXaxis()->SetTitle("Total PE");
     hist->GetYaxis()->SetTitle("Count");
+    int count=0;
     for(int i=0;i<NEtries;i++){
         GetEntry(i);
-        hist->Fill(totalPE);
+        if(isGamma)
+        {
+            count++;
+            hist->Fill(totalPE);
+        }
+        if(count>=gammaNumber)
+        {
+            std::cout<<"Gamma Number : "<<count<<" Reached!"<<std::endl;
+            break;
+        }
+    }
+    if(ifASBkg){
+        ASBkg(hist);
     }
     if(ifFit){
         TF1 * f = new TF1("MCShape",radioActiveSource,&RadioActiveSource::MCShape,x_min,x_max,radioActiveSource->GetNPars(),"RadioActiveSource","MCShape");   // create TF1 class.
@@ -118,6 +159,83 @@ TH1F* TAORunData::GetHistOfTotalPE(bool ifFit)
     return hist;
 }
 
+
+TH1F* TAORunData::GetHistOfFullEnergyPeak(bool ifFit)
+{
+    float x_min=radioActiveSource->GetTotalPEHistXMin();
+    float x_max=radioActiveSource->GetTotalPEHistXMax();
+    int NBins=radioActiveSource->GetTotalPEHistNBins();
+    std::string histName="FullEnergyPeak_"+radioActiveSource->GetSourceLabel();
+    TH1F* hist=new TH1F(histName.c_str(),histName.c_str(),NBins,x_min,x_max);
+    hist->GetXaxis()->SetTitle("Total PE");
+    hist->GetYaxis()->SetTitle("Count");
+    int count=0;
+    for(int i=0;i<NEtries;i++){
+        GetEntry(i);
+        if(isGamma)
+        {
+            count++;
+            if(Edep>(radioActiveSource->GetGammaEnergy()*0.9999) && Edep<(radioActiveSource->GetGammaEnergy()*1.0001))
+            {
+                hist->Fill(totalPE);
+            }
+        }
+        if(count>=gammaNumber)
+        {
+            std::cout<<"Gamma Number : "<<count<<" Reached!"<<std::endl;
+            break;
+        }
+    }
+    if(ifFit){
+        hist->Fit("gaus","");
+    }
+    return hist;
+}
+
+void TAORunData::AddBkg(TH1F* signal, float time)
+{
+    //Read the file
+    TFile* bkgFile=TFile::Open((ANATOP+"/input/Bkg/AssumedBkg.root").c_str());
+    TH1F* bkgHist=(TH1F*)bkgFile->Get("Bkg_601.4s");
+
+    //create bkg hist
+    TH1F* sampleBkg=new TH1F("SampleBkg","SampleBkg",signal->GetNbinsX(),signal->GetXaxis()->GetXmin(),signal->GetXaxis()->GetXmax());
+    float NBkg=bkgHist->GetEntries()*time/601.4;
+    for(int i=0;i<NBkg;i++){
+        sampleBkg->Fill(bkgHist->GetRandom());
+    }
+    signal->Sumw2(true);
+    signal->Add(sampleBkg,1);
+    signal->Sumw2(false);
+    bkgFile->Close();
+}
+
+void TAORunData::SubBkg(TH1F* signal, float time)
+{
+    //Read the file
+    TFile* bkgFile=TFile::Open((ANATOP+"/input/Bkg/AssumedBkg.root").c_str());
+    TH1F* bkgHist=(TH1F*)bkgFile->Get("Bkg_601.4s");
+
+    //create bkg hist
+    TH1F* sampleBkg=new TH1F("SampleBkg","SampleBkg",signal->GetNbinsX(),signal->GetXaxis()->GetXmin(),signal->GetXaxis()->GetXmax());
+    float NBkg=bkgHist->GetEntries()*time/601.4;
+    for(int i=0;i<NBkg;i++){
+        sampleBkg->Fill(bkgHist->GetRandom());
+    }
+    signal->Sumw2(true);
+    signal->Add(sampleBkg,-1);
+    signal->Sumw2(false);
+    bkgFile->Close();
+}
+
+void TAORunData::ASBkg(TH1F* signal, float time)
+{
+    AddBkg(signal,time);
+    SubBkg(signal,time);
+}
+
+
+
 void TAORunData::Finalize()
 {
     delete mainTree;
@@ -128,3 +246,4 @@ std::ostream & operator<<(std::ostream & os, const TAORunData TAORun)
     using namespace std;
     return os;
 }
+
