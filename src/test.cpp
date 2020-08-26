@@ -42,7 +42,7 @@ void TestTAORunData()
 {
     using namespace std;
     //Set Draw Option
-    //SetGlobalDrawOption();
+    SetGlobalDrawOption();
     TAORunData* testTAORun=new TAORunData("Ge68",30,700);
     testTAORun->SetIfASBkg(true);
     cout<<testTAORun<<endl;

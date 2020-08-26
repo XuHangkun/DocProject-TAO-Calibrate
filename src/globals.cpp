@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "TStyle.h"
+
 void  SetGlobalDrawOption()
 {
     gStyle->SetCanvasDefH(560*0.8);

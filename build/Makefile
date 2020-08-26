@@ -330,6 +330,36 @@ src/TAORunData.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/TAORunData.cpp.s
 .PHONY : src/TAORunData.cpp.s
 
+src/globals.o: src/globals.cpp.o
+
+.PHONY : src/globals.o
+
+# target to build an object file
+src/globals.cpp.o:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/globals.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/globals.cpp.o
+.PHONY : src/globals.cpp.o
+
+src/globals.i: src/globals.cpp.i
+
+.PHONY : src/globals.i
+
+# target to preprocess a source file
+src/globals.cpp.i:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/globals.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/globals.cpp.i
+.PHONY : src/globals.cpp.i
+
+src/globals.s: src/globals.cpp.s
+
+.PHONY : src/globals.s
+
+# target to generate assembly for a file
+src/globals.cpp.s:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/globals.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/globals.cpp.s
+.PHONY : src/globals.cpp.s
+
 src/test.o: src/test.cpp.o
 
 .PHONY : src/test.o
@@ -388,6 +418,9 @@ help:
 	@echo "... src/TAORunData.o"
 	@echo "... src/TAORunData.i"
 	@echo "... src/TAORunData.s"
+	@echo "... src/globals.o"
+	@echo "... src/globals.i"
+	@echo "... src/globals.s"
 	@echo "... src/test.o"
 	@echo "... src/test.i"
 	@echo "... src/test.s"
