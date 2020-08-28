@@ -31,4 +31,7 @@ void  SetGlobalDrawOption()
     gStyle->SetTitleXOffset(0.8);
     gStyle->SetTitleYSize(0.06);
     gStyle->SetTitleYOffset(1.2);
+
+    gStyle->SetOptFit(kFALSE);
+    gStyle->SetOptStat(kFALSE);
 }

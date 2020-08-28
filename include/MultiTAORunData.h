@@ -37,10 +37,11 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef MULTIRADIOACTIVESOURCE
-#define MULTIRADIOACTIVESOURCE 
+#ifndef MULTITAORUNDATA
+#define MULTITAORUNDATA 
 
 #include "RadioActiveSource.h"
+#include "TAORunData.h"
 #include <string>
 #include <vector>
 #include "TF1.h"
@@ -49,14 +50,14 @@
  * @brief:  Model of several radio active sources which
  *          are used for nonlinearity calibration
  */
-class MultiRadioActiveSource
+class MultiTAORunData
 {
 private:
     //Names of radioactive sources
     std::vector<std::string> sources;
 
     //all calibration height is set to 0mm
-    std::vector<RadioActiveSource*> radioActiveSources;
+    std::vector<TAORunData*> taoRunDatas;
 
     //Number of Parameters
     int NPars; 
@@ -65,6 +66,9 @@ private:
     float minGammaEnergy;
     float maxGammaEnergy;
 
+    //Total spectrum of all radio active sources
+    TH1F* totalPESpectrum; 
+
     //MCShape function for fit
     TF1* tfTotalMCShape;
     
@@ -72,13 +76,21 @@ private:
 
     
 public:
-    MultiRadioActiveSource(std::vector<std::string> inSources,int Nfile);
-    MultiRadioActiveSource(std::string inSources[], int N,int NFile);
-    ~MultiRadioActiveSource();
+    MultiTAORunData(std::vector<std::string> inSources,int Nfile);
+    MultiTAORunData(std::string inSources[], int N,int NFile);
+    ~MultiTAORunData();
 
     //MCShape function to fit total PE spectrum of multi. sources
     double TotalMCShape(double* x,double* pars);
     TF1*   GetTFTotalMCShape();
+    TH1F*  GetTotalPESpectrum();
+    void  AddBkg(float time=500);
+    void  SubBkg(float time=500);
+    void  ASBkg(float time=500);
+    TAORunData*  GetTAORunData(std::string name);
+    TAORunData*  GetTAORunData(int index);
+    void FillTotalPESpectrum();
+    void FitTotalPESprectrum();
 
     
 

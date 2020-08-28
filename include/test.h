@@ -7,7 +7,7 @@
 void TestRadioActiveSource();
 
 //Test Class MultiRadioActiveSource
-void TestMultiRadioActiveSource();
+void TestMultiTAORunData();
 
 //Test Class TAORunData
 void TestTAORunData();

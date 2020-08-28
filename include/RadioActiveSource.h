@@ -58,7 +58,9 @@ private:
     float gammaEnergy;   //Gamma Energy
 
     //Fit parameters
-    TF1* tfMCShape;
+    float XMin;
+    float XMax;   //Histogram or function range!
+    int   NBins;
     int NPars;
     float initialAmp;
     float initialMean;
@@ -66,17 +68,41 @@ private:
     float initialELeapFrac;
     float matchMean;
     TGraph* gr_ELeap;
+    TF1* tfMCShape;
 
 public:
     RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight=0);
     ~RadioActiveSource();
 
+    /*Get and Set function*/
     int GetNPars() { return NPars; }
+    void SetNPars(int value) { NPars=value; }
+
+    float GetXMin() { return XMin; }
+    void  SetXMin(float value) { XMin=value; }
+
+    float GetXMax() { return XMax; }
+    void  SetXMax(float value) { XMax=value; }
+
+    int GetNBins() { return NBins; }
+    void  SetNBins(int value) { NBins=value; }
+
     float GetInitialAmp() { return initialAmp; }
+    void SetInitialAmp(float value) { initialAmp=value; }
+
     float GetInitialMean() { return initialMean; }
+    void SetInitialMean(float value) { initialMean=value; }
+
     float GetInitialSigma() { return initialSigma; }
+    void SetInitialSigma(float value) { initialSigma=value; }
+
     float GetInitialELeapFrac() { return initialELeapFrac; }
+    void SetInitialELeapFrac(float value) { initialELeapFrac=value; }
+
     float GetGammaEnergy() { return gammaEnergy; }
+    void SetGammaEnergy(float value) { gammaEnergy=value; }
+
+    TF1* GetTFMCShape() { return tfMCShape; }
 
     //Manage files, return file list of root files
     std::vector<std::string> GetFileNames();
@@ -88,14 +114,7 @@ public:
     double Gaus(double* x,double* par);
     double ELeapSpec(double* x,double* par);
     double MCShape(double* x,double* par);
-    TF1* GetTFMCShape() { return tfMCShape; }
 
-    //Get the range of total PE spectrum ( Min )
-    float GetTotalPEHistXMin();
-    //Get the range of total PE spectrum ( Max )
-    float GetTotalPEHistXMax();
-    //Get avaliable bin number of total PE spectrum
-    int GetTotalPEHistNBins();
 
     //Get unique label
     std::string GetSourceLabel();
@@ -104,7 +123,5 @@ public:
     friend std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS); 
 
 };
-
-
 
 #endif

@@ -49,6 +49,8 @@
 #include <iostream>
 #include "TH1F.h"
 #include "TFile.h"
+#include "TF1.h"
+#include "TChain.h"
 
 
 /**
@@ -58,28 +60,31 @@ class TAORunData : public RunData
 {
 private:
     //General information
+    
+    TChain* event_tree;
+    TChain* fmuon;
 
     std::string source;        //source name
     int calibHeight;
     RadioActiveSource* radioActiveSource;
+
     //Physical data
     int currentEntry;
-    float capTime;          //neutron capture time
-    int totalPE;            //total PE of a event
-    int NCompton;           //Numbers of compton scattering of a gamma
-    float Edep;             //energy deposit in GdLS
+    float capTime;              //neutron capture time
+    int totalPE;                //total PE of a event
+    int NCompton;               //Numbers of compton scattering of a gamma
+    float Edep;                 //energy deposit in GdLS
     int NParticles;
     bool isGamma;
     std::vector<int> PDGCode;   //pdg code of primary particles
-    std::vector<double> hitTime; //hit time of photon on PMT
-    float EDepCenterX;     //X value of energy deposit position
-    float EDepCenterY;     //Y value of energy deposit position
-    float EDepCenterZ;     //Z value of energy deposit position
+    std::vector<double> hitTime;//hit time of photon on PMT
+    float EDepCenterX;          //X value of energy deposit position
+    float EDepCenterY;          //Y value of energy deposit position
+    float EDepCenterZ;          //Z value of energy deposit position
     
-    int gammaNumber;       //The number of gamma used in calibration
+    int gammaNumber;            //The number of gamma used in calibration
 
-    bool ifASBkg;          //If consider background signal
-
+    TH1F* histOfTotalPE;        //hist Of Total PE
 
 public:
     TAORunData(std::string inSource,int inNFile,int inCalibHeight=0);
@@ -91,9 +96,6 @@ public:
     /*Close the file*/
     virtual void Finalize();
 
-    /*set function*/
-    inline void SetGammaNumber(int inGammaN);
-    inline void SetIfASBkg(bool inIfASBkg);
 
     /*get function*/
     inline float GetCapTime();
@@ -107,21 +109,33 @@ public:
     inline float GetEdepCenterX();
     inline float GetEdepCenterY();
     inline float GetEdepCenterZ();
+
     inline int   GetGammaNumber();
-    inline bool  GetIfASBkg();
+    inline void   SetGammaNumber(int inGammaN);
+
+    inline RadioActiveSource* GetRadioActiveSource();
+    TH1F* GetHistOfTotalPE() { return histOfTotalPE; }
+    TF1* GetTFMCShape() { return radioActiveSource->GetTFMCShape(); }
 
     /*read n'th event in mainTree*/
     void GetEntry(int n);
 
     /*get histgrom of total PE*/
-    TH1F* GetHistOfTotalPE(bool ifFit=false);
+    void FillHistOfTotalPE();
+
     /*get total PE histogram of full energy peak*/
-    TH1F* GetHistOfFullEnergyPeak(bool ifFit=true);
+    void FillHistOfTotalPE_FullEnergy();
+
+    /*Fit Hist of Total PE Spectrum*/
+    void FitHistOfTotalPE(std::string func="MCShape");
 
     /*Add and substract Bkg Effect*/
-    void AddBkg(TH1F* signal, float time=500);  //Add
-    void SubBkg(TH1F* signal,float time=500);  //Substract
-    void ASBkg(TH1F* signal,float time=500);   //Add and Sub
+    void AddBkg( float time=500);  //Add
+    void SubBkg(float time=500);  //Substract
+    void ASBkg( float time=500);   //Add and Sub
+
+    /*Update hist*/
+    void UpdateHist();
 
     //Reload operator <<
     friend std::ostream & operator<<(std::ostream & os, const TAORunData TAORun);
@@ -133,10 +147,6 @@ inline void TAORunData::SetGammaNumber(int inGammaN)
     gammaNumber=inGammaN;
 }
 
-inline void TAORunData::SetIfASBkg(bool inIfASBkg)
-{
-    ifASBkg=inIfASBkg;
-}
 
 inline int TAORunData::GetCurrentEntry()
 {
@@ -188,8 +198,8 @@ inline int TAORunData::GetGammaNumber()
     return gammaNumber;
 }
 
-inline bool TAORunData::GetIfASBkg()
+inline RadioActiveSource* TAORunData::GetRadioActiveSource()
 {
-    return ifASBkg;
+    return radioActiveSource;
 }
 #endif

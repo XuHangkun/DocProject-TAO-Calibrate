@@ -17,7 +17,7 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
         gammaEnergy=0.511*2;   //MeV
     }else if (source.find("Cs137")!=std::string::npos || source.find("cs137")!=std::string::npos)
     {
-        gammaEnergy=0.662;   //MeV   
+        gammaEnergy=0.6617;   //MeV   
     }else if (source.find("Mn54")!=std::string::npos || source.find("mn54")!=std::string::npos)
     {
         gammaEnergy=0.835;   //MeV   
@@ -26,7 +26,7 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
         gammaEnergy=1.461;   //MeV   
     }else if (source.find("Co60")!=std::string::npos || source.find("co60")!=std::string::npos)
     {
-        gammaEnergy=2.506;   //MeV   
+        gammaEnergy=2.50574;   //MeV   
     }else
     {
         gammaEnergy=0;
@@ -34,6 +34,9 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
     
     //initial fit parameters
     NPars=4;
+    XMin=0.36*gammaEnergy*GAMMALY;
+    XMax=1.2*gammaEnergy*GAMMALY;
+    NBins=200;
     initialAmp=0;
     initialMean=0;
     initialSigma=0;
@@ -168,20 +171,7 @@ std::vector<std::string> RadioActiveSource::GetFileNames()
     return tmp_fileNames;
 }
 
-float RadioActiveSource::GetTotalPEHistXMin()
-{
-    return 0.36*gammaEnergy*4300;
-}
 
-float RadioActiveSource::GetTotalPEHistXMax()
-{
-    return 1.2*gammaEnergy*4300;
-}
-
-int RadioActiveSource::GetTotalPEHistNBins()
-{
-    return 200;
-}
 
 
 std::string RadioActiveSource::GetSourceLabel()

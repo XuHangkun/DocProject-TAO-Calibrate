@@ -4,7 +4,7 @@
 
 const std::string TAOTOP="/dybfs/users/xuhangkun/SimTAO";
 const std::string ANATOP=TAOTOP+"/analysis/calibrate";
-const std::string DATATOP=TAOTOP+"/Data/calibration";
+const std::string DATATOP=TAOTOP+"/Data/calibrate/nonuniformity";
 
 const float GAMMALY=4300.0;
 

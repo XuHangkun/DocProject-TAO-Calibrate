@@ -4,8 +4,8 @@
 int main(void)
 {
     using namespace std;
-    //TestMultiRadioActiveSource();
+    TestMultiTAORunData();
     //TestRadioActiveSource();
-    TestTAORunData();
+    //TestTAORunData();
 
 }
