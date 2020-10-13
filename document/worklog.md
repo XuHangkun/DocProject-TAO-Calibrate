@@ -24,4 +24,6 @@ TAO探测器有机玻璃杆方案模拟
 
 ### 分析结果
 
+对于没有放光纤的情况
+![结论](https://github.com/XuHangkun/DocProject-TAO-Calibrate/tree/master/document/figure/test.png)
 
