@@ -21,3 +21,13 @@ void RunData::Finalize()
 {
 }
 
+void RunData::GetEntry(int n)
+{
+
+}
+
+int RunData::GetEntries()
+{
+    return 0;
+}
+

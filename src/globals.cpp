@@ -1,5 +1,7 @@
 #include "globals.h"
 #include "TStyle.h"
+#include <string>
+
 
 void  SetGlobalDrawOption()
 {
@@ -34,4 +36,6 @@ void  SetGlobalDrawOption()
 
     gStyle->SetOptFit(kFALSE);
     gStyle->SetOptStat(kFALSE);
+    gStyle->SetStatBorderSize(0);
+    gStyle->SetLegendBorderSize(0);
 }

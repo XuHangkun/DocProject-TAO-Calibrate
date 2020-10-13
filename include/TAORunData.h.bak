@@ -51,8 +51,6 @@
 #include "TFile.h"
 #include "TF1.h"
 #include "TChain.h"
-#include "SiPM.h"
-#include <cmath>
 
 
 /**
@@ -83,15 +81,9 @@ private:
     bool isGamma;
     std::vector<int> PDGCode;   //pdg code of primary particles
     std::vector<double> hitTime;//hit time of photon on PMT
-    double firstHitTime[SiPM::NSIPM]={0};//first hit time of photon on PMT
-    double hitCharge[SiPM::NSIPM]={0};   //hit 
     float EDepCenterX;          //X value of energy deposit position
     float EDepCenterY;          //Y value of energy deposit position
     float EDepCenterZ;          //Z value of energy deposit position
-    float InitT;          //X value of energy deposit position
-    float InitX;          //X value of energy deposit position
-    float InitY;          //Y value of energy deposit position
-    float InitZ;          //Z value of energy deposit position
     
     int gammaNumber;            //The number of gamma used in calibration
 
@@ -120,28 +112,17 @@ public:
     inline float GetCapTime();
     inline int GetCurrentEntry();
     inline int GetTotalPE();
-    bool GetIsGamma() {return isGamma; }
-    bool   GetIsFullDepositGamma() { return (isGamma && Edep>radioActiveSource->GetKinetic()*0.999 && Edep<radioActiveSource->GetKinetic()*1.001 );}
     inline int GetNCompton();
     inline float GetEdep();
     inline int GetNParticles();
     std::vector<int>& GetPDGCode();
     std::vector<double>& GetHitTime();
-    double GetFirstHitTime(int pmt_id) { return firstHitTime[pmt_id]; }
-    double GetHitCharge(int pmt_id) { return hitCharge[pmt_id]; }
     inline float GetEdepCenterX();
     inline float GetEdepCenterY();
     inline float GetEdepCenterZ();
-    float GetEdepCenterR() { return sqrt(EDepCenterX*EDepCenterX+EDepCenterY*EDepCenterY+EDepCenterZ*EDepCenterZ); }
-    float GetEdepCenterTheta() { return acos(EDepCenterZ/(GetEdepCenterR())); }
-    float GetEdepCenterPhi();
-    float GetInitT() { return InitT; }
-    float GetInitX() { return InitX; } 
-    float GetInitY() { return InitY; } 
-    float GetInitZ() { return InitZ; } 
-    float GetInitR() { return sqrt(InitX*InitX+InitY*InitY+InitZ*InitZ); }
-    float GetInitTheta() { return acos(InitZ/(GetEdepCenterR())); }
     inline int   GetGammaNumber();
+    bool   GetIsGamma()   { return isGamma; }
+    bool   GetIsFullDepositGamma() { return (isGamma && Edep>radioActiveSource->GetKinetic()*0.9999 && Edep<radioActiveSource->GetKinetic()*1.0001 );}
     inline RadioActiveSource* GetRadioActiveSource();
     TH1F* GetHistOfTotalPE() { return histOfTotalPE; }
     TF1* GetTFMCShape() { return radioActiveSource->GetTFMCShape(); }

@@ -1,200 +1,200 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <SourceList>
     <Source Name="Cs137">
-        <FitPars Function="MCShape" CalibHeight="-850">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-850">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2392.52"></MatchMean>
         </FitPars>
         
-        <FitPars Function="MCShape" CalibHeight="-800">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-800">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2472.91"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-750">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-750">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2539.07"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-700">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-700">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2581.2"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-650">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-650">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2611.63"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-600">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-600">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2633.39"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-550">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-550">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2650.34"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-500">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-500">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2663.69"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-400">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-400">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2682"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-300">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-300">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2693.61"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-200">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-200">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2700.79"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="-100">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="-100">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2705.48"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="0">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="0">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2706.43"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="100">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="100">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2705.42"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="200">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="200">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2701.01"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="300">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="300">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2693.43"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="400">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="400">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2681.57"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="500">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="500">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2662.77"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="550">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="550">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2649.95"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="600">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="600">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2632.81"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="650">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="650">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2609.93"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="700">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="700">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2579.48"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="750">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="750">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2537.12"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="800">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="800">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>
             <MatchMean value="2469.07"></MatchMean>
         </FitPars>
 
-        <FitPars Function="MCShape" CalibHeight="850">
-            <Amp value="3300"></Amp>
+        <FitPars Function="MCShape" CalibPosX="0" CalibPosY="0" CalibPosZ="850">
+            <Amp value="2800"></Amp>
             <Mean value="2679.5"></Mean>
             <Sigma value="3.0"></Sigma>
             <ELeapFrac value="80"></ELeapFrac>

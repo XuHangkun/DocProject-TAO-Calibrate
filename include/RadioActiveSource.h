@@ -45,6 +45,8 @@
 #include <vector>
 #include <iostream>
 #include "TF1.h"
+#include "globals.h"
+#include "TVector3.h"
 
 /**
  * @brief:  model of radio active source
@@ -52,16 +54,12 @@
 class RadioActiveSource
 {
 private:
-    std::string source;  //source name
-    int calibHeight;     //calibbration height
-    int NFile;
-    float gammaEnergy;   //Gamma Energy
+    std::string source;         //source name
+    TVector3 calibPosition;     //calibbration Position
+    float kinetic;              //Gamma Energy
 
     //Fit parameters
-    float XMin;
-    float XMax;   //Histogram or function range!
-    int   NBins;
-    int NPars;
+    int   NPars;
     float initialAmp;
     float initialMean;
     float initialSigma;
@@ -71,21 +69,25 @@ private:
     TF1* tfMCShape;
 
 public:
-    RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight=0);
+    RadioActiveSource(std::string inSource,float inCalibHeight);
+    RadioActiveSource(std::string inSource,float inKinetic,float inCalibHeight);
+    RadioActiveSource(std::string inSource,TVector3 inCalibPos);
+    RadioActiveSource(std::string inSource,float inKinetic,TVector3 inCalibPos);
     ~RadioActiveSource();
 
     /*Get and Set function*/
+    std::string GetSourceName() { return source; }
+    void SetSourceName(std::string value) { source=value; }
+
+    TVector3 GetCalibPosition() { return calibPosition; }
+    float GetCalibPosX() { return calibPosition.X(); }
+    float GetCalibPosY() { return calibPosition.Y(); }
+    float GetCalibPosZ() { return calibPosition.Z(); }
+    
+    void SetCalibPosition(TVector3 value) { calibPosition=value; }
+       
     int GetNPars() { return NPars; }
     void SetNPars(int value) { NPars=value; }
-
-    float GetXMin() { return XMin; }
-    void  SetXMin(float value) { XMin=value; }
-
-    float GetXMax() { return XMax; }
-    void  SetXMax(float value) { XMax=value; }
-
-    int GetNBins() { return NBins; }
-    void  SetNBins(int value) { NBins=value; }
 
     float GetInitialAmp() { return initialAmp; }
     void SetInitialAmp(float value) { initialAmp=value; }
@@ -99,16 +101,21 @@ public:
     float GetInitialELeapFrac() { return initialELeapFrac; }
     void SetInitialELeapFrac(float value) { initialELeapFrac=value; }
 
-    float GetGammaEnergy() { return gammaEnergy; }
-    void SetGammaEnergy(float value) { gammaEnergy=value; }
+    float GetMatchMean() { return matchMean; }
+    void SetMatchMean(float value) { matchMean=value; }
+
+    float GetKinetic() { return kinetic; }
+    void SetKinetic(float value) { kinetic=value; }
 
     TF1* GetTFMCShape() { return tfMCShape; }
+    TGraph* GetELeapSpec() { return gr_ELeap; }
 
-    //Manage files, return file list of root files
-    std::vector<std::string> GetFileNames();
 
     //read xml file and get fit parameters
-    void ReadInitialFitPars();
+    bool ReadInitialFitPars();
+
+    //Query the kinetic energy of radioactive particle
+    void QuerySourceKinetic();
 
     //Gaus, ELeapSepc and totalSpec
     double Gaus(double* x,double* par);

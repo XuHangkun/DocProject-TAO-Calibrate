@@ -54,18 +54,22 @@ private:
 
 protected:
 
-    TChain* mainTree;         //the tree which include all variables we need
-    int NEtries;             //number of entries in mainTree
 
 public:
     RunData();
     ~RunData();
 
-    /*Open the file and initialize the tree*/
+    /*Open the file and initialize the tree  ...*/
     virtual void Initialize()=0;
 
     /*Close the file*/
     virtual void Finalize()=0;
+
+    /* Read n'th entry (the data should save to class varibale)*/
+    virtual void GetEntry(int n)=0;
+
+    /*Get the number of events in the tree*/
+    virtual int GetEntries()=0;
 };
 
 #endif

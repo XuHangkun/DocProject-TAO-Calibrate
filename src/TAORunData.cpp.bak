@@ -9,8 +9,6 @@
 #include <sstream>
 #include "TFile.h"
 #include "globals.h"
-#include "SiPM.h"
-#include "TMath.h"
 
 TAORunData::TAORunData(std::string inSource,std::string filePath,int inNFile,TVector3 inPosition)
 {
@@ -44,7 +42,7 @@ TAORunData::TAORunData(std::string inSource,float kinetic,std::string filePath,i
 
 TAORunData::~TAORunData()
 {
-    Finalize();
+    //Finalize();
 }
 
 void TAORunData::Initialize()
@@ -119,22 +117,6 @@ void TAORunData::Initialize()
     mainTree->SetBranchStatus("GdLS.Edep_z",kTRUE);
     mainTree->SetBranchAddress("GdLS.Edep_z",&EDepCenterZ);
 
-    InitT=0;
-    mainTree->SetBranchStatus("vertex.t0",kTRUE);
-    mainTree->SetBranchAddress("vertex.t0",&InitT);
-
-    InitX=0;
-    mainTree->SetBranchStatus("vertex.x0",kTRUE);
-    mainTree->SetBranchAddress("vertex.x0",&InitX);
-
-    InitY=0;
-    mainTree->SetBranchStatus("vertex.y0",kTRUE);
-    mainTree->SetBranchAddress("vertex.y0",&InitY);
-
-    InitZ=0;
-    mainTree->SetBranchStatus("vertex.z0",kTRUE);
-    mainTree->SetBranchAddress("vertex.z0",&InitZ);
-
 
     //Initialize the tree here
     float x_min=radioActiveSource->GetKinetic()*GAMMALY*0.36;
@@ -156,20 +138,6 @@ void TAORunData::GetEntry(int n)
     event_tree->SetBranchStatus("vertex.pdg_code",kTRUE);
     event_tree->SetBranchAddress("vertex.pdg_code",pdgs);
 
-    for(int i=0;i<SiPM::NSIPM;i++){
-        firstHitTime[i]=0;
-        hitCharge[i]=0;
-    }
-    /*
-    const int MaxNum=50000;
-    double tmp_hitTime[MaxNum]={0};
-    int tmp_hitPMT[MaxNum]={0};
-    mainTree->SetBranchStatus("hit_SiPM",kTRUE);
-    mainTree->SetBranchAddress("hit_SiPM",tmp_hitPMT);
-    mainTree->SetBranchStatus("hit_time",kTRUE);
-    mainTree->SetBranchAddress("hit_time",tmp_hitTime);
-    */
-
     mainTree->GetEntry(n);
     event_tree->GetEntry(n);
     currentEntry=n;
@@ -185,21 +153,7 @@ void TAORunData::GetEntry(int n)
             isGamma=true;
         }
     }
-    
-    /*
-    for(int i=0;i<totalPE;i++){
-        hitCharge[tmp_hitPMT[i]]++;
-        if(hitCharge[tmp_hitPMT[i]]==1){
-            firstHitTime[tmp_hitPMT[i]]=tmp_hitTime[i];
-        }else if(firstHitTime[tmp_hitPMT[i]]>tmp_hitTime[i]){
-            firstHitTime[tmp_hitPMT[i]]=tmp_hitTime[i];
-        }
-    }
-
     event_tree->SetBranchStatus("vertex.pdg_code",kFALSE);
-    mainTree->SetBranchStatus("hit_SiPM",kFALSE);
-    mainTree->SetBranchStatus("hit_time",kFALSE);
-    */
 
 }
 
@@ -374,14 +328,4 @@ std::ostream & operator<<(std::ostream & os, const TAORunData TAORun)
     return os;
 }
 
-float TAORunData::GetEdepCenterPhi()
-{
-    double rr=sqrt(EDepCenterX*EDepCenterX+EDepCenterY*EDepCenterY);
-    double phi=0;
-    if(EDepCenterY>=0){
-        phi=acos(EDepCenterX/rr);
-    }else{
-        phi=2*TMath::Pi()-acos(EDepCenterX/rr);
-    }
-    return phi;
-}
+

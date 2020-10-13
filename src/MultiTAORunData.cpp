@@ -1,122 +1,159 @@
-
 #include "MultiTAORunData.h"
 #include "RadioActiveSource.h"
 #include <vector>
 #include <string>
 #include "TF1.h"
 #include "globals.h"
+#include "TGraphErrors.h"
+#include "math.h"
+#include "TVector3.h"
 
-MultiTAORunData::MultiTAORunData(std::vector<std::string> inSources,int NFile)
+MultiTAORunData::MultiTAORunData(std::vector<std::string> inSources, std::vector<std::string> dataFiles,int NFile)
 {  
-    NPars=0;
-    for(int i=0;i<inSources.size();i++){
-        sources.push_back(inSources[i]);
-        TAORunData* tmp_taorun = new TAORunData(inSources[i],NFile);
-        taoRunDatas.push_back(tmp_taorun);
-        NPars+=tmp_taorun->GetRadioActiveSource()->GetNPars();
-
-        //get min and max energy
-        if(i==0){
-            minGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-            maxGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-        }else
-        {
-            float tmp_energy=tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-            if(tmp_energy<minGammaEnergy) minGammaEnergy=tmp_energy;
-            if(tmp_energy>maxGammaEnergy) maxGammaEnergy=tmp_energy;
-        }
-
-        
-    }
-
-    for(int i=0;i<sources.size();i++){
-        taoRunDatas[i]->GetRadioActiveSource()->SetXMin(minGammaEnergy*0.36*GAMMALY);
-        taoRunDatas[i]->GetRadioActiveSource()->SetXMax(maxGammaEnergy*1.2*GAMMALY);
-        taoRunDatas[i]->GetRadioActiveSource()->SetNBins(sources.size()*150);
-        taoRunDatas[i]->UpdateHist();
-    }
-
-    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",sources.size()*150,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY);
-    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
-    totalPESpectrum->GetYaxis()->SetTitle("Count");
-
-    //Initia        tfTotalMCShape
-    tfTotalMCShape=new TF1("MCShape",this,&MultiTAORunData::TotalMCShape,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY,NPars,"MultiTAORunData","TotalMCShape");
-    tfTotalMCShape->SetNpx(1000);
-    //Set Initial Parameters
-    int currentPar=0;
-    for(int i=0;i<sources.size();i++){
-        currentPar=i*4;
-        tfTotalMCShape->SetParameter(currentPar,taoRunDatas[i]->GetRadioActiveSource()->GetInitialAmp());
-        tfTotalMCShape->SetParName(currentPar,(sources[i]+"_Amplitude").c_str());
-        tfTotalMCShape->SetParameter(currentPar+1,taoRunDatas[i]->GetRadioActiveSource()->GetInitialMean());
-        tfTotalMCShape->SetParName(currentPar+1,(sources[i]+"_Gaus_Mean").c_str());
-        tfTotalMCShape->SetParameter(currentPar+2,taoRunDatas[i]->GetRadioActiveSource()->GetInitialSigma());
-        tfTotalMCShape->SetParName(currentPar+2,(sources[i]+"_Gaus_Sigma").c_str());
-        tfTotalMCShape->SetParameter(currentPar+3,taoRunDatas[i]->GetRadioActiveSource()->GetInitialELeapFrac());
-        tfTotalMCShape->SetParName(currentPar+3,(sources[i]+"_ELeapFrac.").c_str());
-    }    
+    Initialize(inSources,NFile,dataFiles); 
 }
 
-MultiTAORunData::MultiTAORunData(std::string inSources[], int N,int NFile)
+MultiTAORunData::MultiTAORunData(std::string inSources[], int N,std::string dataFiles[],int NFile)
 {
-    NPars=0;
+
+    std::vector<std::string> tmp_source;
+    std::vector<std::string> tmp_file;
     for(int i=0;i<N;i++){
-        sources.push_back(inSources[i]);
-        TAORunData* tmp_taorun = new TAORunData(inSources[i],NFile);
-        taoRunDatas.push_back(tmp_taorun);
-        NPars+=tmp_taorun->GetRadioActiveSource()->GetNPars();
+        tmp_source.push_back(inSources[i]);
+        tmp_file.push_back(dataFiles[i]);
+        std::cout<<inSources[i]<<std::endl;
+        std::cout<<dataFiles[i]<<std::endl;
+    }   
+    Initialize(tmp_source,NFile,tmp_file);
 
-        //get min and max energy
-        if(i==0){
-            minGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-            maxGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-        }else
-        {
-            float tmp_energy=tmp_taorun->GetRadioActiveSource()->GetGammaEnergy();
-            if(tmp_energy<minGammaEnergy) minGammaEnergy=tmp_energy;
-            if(tmp_energy>maxGammaEnergy) maxGammaEnergy=tmp_energy;
-        }
-
-        
-    }
-
-    float sameXmin=minGammaEnergy*0.36*GAMMALY;
-    float sameXmax=maxGammaEnergy*1.2*GAMMALY;
-
-    for(int i=0;i<sources.size();i++){
-        taoRunDatas[i]->GetRadioActiveSource()->SetXMin(sameXmin);
-        taoRunDatas[i]->GetRadioActiveSource()->SetXMax(sameXmax);
-        taoRunDatas[i]->GetRadioActiveSource()->SetNBins(sources.size()*150);
-        taoRunDatas[i]->UpdateHist();
-    }
-
-    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",sources.size()*150,sameXmin,sameXmax);
-    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
-    totalPESpectrum->GetYaxis()->SetTitle("Count");
-
-    //Initia        tfTotalMCShape
-    tfTotalMCShape=new TF1("MCShape",this,&MultiTAORunData::TotalMCShape,minGammaEnergy*0.36*GAMMALY,maxGammaEnergy*1.2*GAMMALY,NPars,"MultiTAORunData","TotalMCShape");
-    tfTotalMCShape->SetNpx(1000);
-    //Set Initial Parameters
-    int currentPar=0;
-    for(int i=0;i<sources.size();i++){
-        currentPar=i*4;
-        tfTotalMCShape->SetParameter(currentPar,taoRunDatas[i]->GetRadioActiveSource()->GetInitialAmp());
-        tfTotalMCShape->SetParName(currentPar,(sources[i]+"_Amplitude").c_str());
-        tfTotalMCShape->SetParameter(currentPar+1,taoRunDatas[i]->GetRadioActiveSource()->GetInitialMean());
-        tfTotalMCShape->SetParName(currentPar+1,(sources[i]+"_Gaus_Mean").c_str());
-        tfTotalMCShape->SetParameter(currentPar+2,taoRunDatas[i]->GetRadioActiveSource()->GetInitialSigma());
-        tfTotalMCShape->SetParName(currentPar+2,(sources[i]+"_Gaus_Sigma").c_str());
-        tfTotalMCShape->SetParameter(currentPar+3,taoRunDatas[i]->GetRadioActiveSource()->GetInitialELeapFrac());
-        tfTotalMCShape->SetParName(currentPar+3,(sources[i]+"_ELeapFrac.").c_str());
-    }    
 }
 
 MultiTAORunData::~MultiTAORunData()
 {
-    for(int i=0;i<taoRunDatas.size();i++){
-        delete taoRunDatas[i];
+    delete totalPESpectrum;
+    delete tfTotalMCShape;
+    for(int i=0;i<taoRunDatas.size();i++)
+    {
+        taoRunDatas[i]->Finalize();
+    }
+}
+
+void MultiTAORunData::Initialize(std::vector<std::string> inSources,int NFile,std::vector<std::string> dataFiles)
+{
+    //initialize source taoRunDatas
+    NPars=0;
+    for(int i=0;i<inSources.size();i++){
+        sources.push_back(inSources[i]);
+        TAORunData* tmp_taorun = new TAORunData(sources[i],dataFiles[i],NFile,TVector3(0,0,0));
+        tmp_taorun->Initialize();
+        taoRunDatas.push_back(tmp_taorun);
+        NPars+=tmp_taorun->GetRadioActiveSource()->GetNPars();
+
+        //get min and max energy
+        if(i==0){
+            minGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetKinetic();
+            maxGammaEnergy = tmp_taorun->GetRadioActiveSource()->GetKinetic();
+        }else
+        {
+            float tmp_energy=tmp_taorun->GetRadioActiveSource()->GetKinetic();
+            if(tmp_energy<minGammaEnergy) minGammaEnergy=tmp_energy;
+            if(tmp_energy>maxGammaEnergy) maxGammaEnergy=tmp_energy;
+        }
+
+        
+    }
+    
+    //Create total PE histogram
+    float xmin=minGammaEnergy*0.36*GAMMALY;
+    float xmax=maxGammaEnergy*1.2*GAMMALY;
+    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",sources.size()*150,xmin,xmax);
+    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
+    totalPESpectrum->GetYaxis()->SetTitle("Count");
+    totalPESpectrum->Sumw2();
+    for(int i=0;i<sources.size();i++)
+    {
+        taoRunDatas[i]->UpdateTotalPEHist(xmin,xmax,150*sources.size());
+    }
+
+
+    //Initia        tfTotalMCShape
+    tfTotalMCShape=new TF1("MCShape",this,&MultiTAORunData::TotalMCShape,xmin,xmax,NPars,"MultiTAORunData","TotalMCShape");
+    tfTotalMCShape->SetNpx(3000);
+    //Set Initial Parameters
+    int currentPar=0;
+    for(int i=0;i<sources.size();i++){
+        currentPar=i*4;
+        tfTotalMCShape->SetParameter(currentPar,taoRunDatas[i]->GetRadioActiveSource()->GetInitialAmp());
+        tfTotalMCShape->SetParName(currentPar,(sources[i]+"_Amplitude").c_str());
+        tfTotalMCShape->SetParameter(currentPar+1,taoRunDatas[i]->GetRadioActiveSource()->GetInitialMean());
+        tfTotalMCShape->SetParName(currentPar+1,(sources[i]+"_Gaus_Mean").c_str());
+        tfTotalMCShape->SetParameter(currentPar+2,taoRunDatas[i]->GetRadioActiveSource()->GetInitialSigma());
+        tfTotalMCShape->SetParName(currentPar+2,(sources[i]+"_Gaus_Sigma").c_str());
+        tfTotalMCShape->SetParameter(currentPar+3,taoRunDatas[i]->GetRadioActiveSource()->GetInitialELeapFrac());
+        tfTotalMCShape->SetParName(currentPar+3,(sources[i]+"_ELeapFrac.").c_str());
+    }    
+}
+
+void MultiTAORunData::UpdateTotalPEHist(bool syn)
+{
+    delete totalPESpectrum;
+
+    float xmin=minGammaEnergy*0.36*GAMMALY;
+    float xmax=maxGammaEnergy*1.2*GAMMALY;
+
+    //create total pe histogram
+    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",sources.size()*150,xmin,xmax);
+    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
+    totalPESpectrum->GetYaxis()->SetTitle("Count");
+    totalPESpectrum->Sumw2();
+
+    if(syn)
+    {
+        for(int i=0;i<sources.size();i++)
+        {
+            taoRunDatas[i]->UpdateTotalPEHist(xmin,xmax,150*sources.size());
+        }
+    }
+}
+
+void MultiTAORunData::UpdateTotalPEHist(float inxmin,float inxmax,int inNbins,bool syn)
+{
+    delete totalPESpectrum;
+
+    float xmin=inxmin;
+    float xmax=inxmax;
+
+    //create total pe histogram
+    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",inNbins,xmin,xmax);
+    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
+    totalPESpectrum->GetYaxis()->SetTitle("Count");
+    totalPESpectrum->Sumw2();
+
+    if(syn)
+    {
+        for(int i=0;i<sources.size();i++)
+        {
+            taoRunDatas[i]->UpdateTotalPEHist(xmin,xmax,inNbins);
+        }
+    }
+}
+
+void MultiTAORunData::UpdateTotalPEHist(int inNbins,float* bins,bool syn)
+{
+    delete totalPESpectrum;
+
+    //create total pe histogram
+    totalPESpectrum = new TH1F("TotalPE_Spectrum","TotalPE_Spectrum",inNbins,bins);
+    totalPESpectrum->GetXaxis()->SetTitle("Total PE");
+    totalPESpectrum->GetYaxis()->SetTitle("Count");
+    totalPESpectrum->Sumw2();
+
+    if(syn)
+    {
+        for(int i=0;i<sources.size();i++)
+        {
+            taoRunDatas[i]->UpdateTotalPEHist(inNbins,bins);
+        }
     }
 }
 
@@ -124,7 +161,7 @@ double MultiTAORunData::TotalMCShape(double* x,double* pars)
 {
     double value=0;
     double *ptr_par=pars;
-    for(int i=0;i<taoRunDatas.size();i++)
+    for(int i=0;i<sources.size();i++)
     {
         ptr_par=&(pars[i*4]);
         value+=taoRunDatas[i]->GetRadioActiveSource()->MCShape(x,ptr_par);        
@@ -170,12 +207,11 @@ TAORunData* MultiTAORunData::GetTAORunData(int index)
 }
 void MultiTAORunData::FillTotalPESpectrum()
 {
-    totalPESpectrum->Sumw2();
     for(int i=0;i<sources.size();i++){
        taoRunDatas[i]->FillHistOfTotalPE();
        totalPESpectrum->Add(taoRunDatas[i]->GetHistOfTotalPE(),1);
+       std::cout<<totalPESpectrum->GetBinError(150)<<std::endl;
     }
-    totalPESpectrum->Sumw2(false);
 }
 
 void MultiTAORunData::FitTotalPESprectrum()
@@ -201,14 +237,14 @@ void MultiTAORunData::AddBkg(float time)
     TH1F* bkgHist=(TH1F*)bkgFile->Get("Bkg_601.4s");
 
     //create bkg hist
-    TH1F* sampleBkg=new TH1F("SampleBkg","SampleBkg",signal->GetNbinsX(),signal->GetXaxis()->GetXmin(),signal->GetXaxis()->GetXmax());
+    TH1F* sampleBkg=(TH1F*)signal->Clone();
+    sampleBkg->Reset();
     float NBkg=bkgHist->GetEntries()*time/601.4;
     for(int i=0;i<NBkg;i++){
         sampleBkg->Fill(bkgHist->GetRandom());
     }
-    signal->Sumw2(true);
     signal->Add(sampleBkg,1);
-    signal->Sumw2(false);
+    std::cout<<totalPESpectrum->GetBinError(150)<<std::endl;
     bkgFile->Close();
 }
 
@@ -221,14 +257,14 @@ void MultiTAORunData::SubBkg(float time)
     TH1F* bkgHist=(TH1F*)bkgFile->Get("Bkg_601.4s");
 
     //create bkg hist
-    TH1F* sampleBkg=new TH1F("SampleBkg","SampleBkg",signal->GetNbinsX(),signal->GetXaxis()->GetXmin(),signal->GetXaxis()->GetXmax());
+    TH1F* sampleBkg=(TH1F*)signal->Clone();
+    sampleBkg->Reset();
     float NBkg=bkgHist->GetEntries()*time/601.4;
     for(int i=0;i<NBkg;i++){
         sampleBkg->Fill(bkgHist->GetRandom());
     }
-    signal->Sumw2(true);
     signal->Add(sampleBkg,-1);
-    signal->Sumw2(false);
+    std::cout<<totalPESpectrum->GetBinError(150)<<std::endl;
     bkgFile->Close();
 }
 
@@ -238,3 +274,70 @@ void MultiTAORunData::ASBkg(float time)
     SubBkg(time);
 }
 
+void MultiTAORunData::AddK40Co60Bkg(float time)
+{
+    TH1F* signal=totalPESpectrum;
+
+    //Read the file
+    TFile* bkgFile=TFile::Open((ANATOP+"/input/Bkg/K40Co60Spectrum.root").c_str());
+    TH1F* bkgHist=(TH1F*)bkgFile->Get("K40Co60Spectrum");
+
+    //create bkg hist
+    TH1F* sampleBkg=new TH1F("SampleBkg","SampleBkg",signal->GetNbinsX(),signal->GetXaxis()->GetXmin(),signal->GetXaxis()->GetXmax());
+    float NBkg=bkgHist->GetEntries()*time/5000;
+    for(int i=0;i<NBkg;i++){
+        sampleBkg->Fill(bkgHist->GetRandom());
+    }
+    signal->Add(sampleBkg,1);
+    bkgFile->Close();
+}
+
+TGraphErrors* MultiTAORunData::GetFittingBias()
+{
+    const int NSource=sources.size();
+    //Get the true value and the fitted value
+    float truePeak[NSource]={0.};
+    float truePeakError[NSource]={0.};
+    float peak[NSource]={0.};
+    float peakError[NSource]={0.};
+    for(int i=0;i<NSource;i++){
+        taoRunDatas[i]->FillHistOfTotalPE_FullEnergy();
+        taoRunDatas[i]->FitHistOfTotalPE("Gaus");
+        TH1F* tmp=taoRunDatas[i]->GetHistOfTotalPE();
+        truePeak[i]=tmp->GetFunction("gaus")->GetParameter(1);
+        truePeakError[i]=tmp->GetFunction("gaus")->GetParError(1);
+
+        peak[i]=totalPESpectrum->GetFunction("MCShape")->GetParameter(4*i+1);
+        peakError[i]=totalPESpectrum->GetFunction("MCShape")->GetParError(4*i+1);
+    }
+
+    float bias[NSource]={0};
+    float biasError[NSource]={0};
+    for(int i=0;i<NSource;i++){
+        bias[i]=fabs(100*(truePeak[i]-peak[i])/truePeak[i]);
+        biasError[i]=fabs(100*sqrt(truePeakError[i]*truePeakError[i]+peakError[i]*truePeakError[i])/truePeak[i]);
+    }
+    
+    //Create graph 
+    float xaxis[NSource]={0};
+    for(int i=0;i<NSource;i++){
+        xaxis[i]=i+1;
+    }
+    float xaxisE[NSource]={0};
+    TGraphErrors* gr=new TGraphErrors(NSource,xaxis,bias,xaxisE,biasError);
+    gr->SetMarkerStyle(33);
+    gr->SetMarkerSize(1);
+    gr->SetLineWidth(2);
+    gr->GetYaxis()->SetTitle("Relative bias[%]");
+    //gr->GetYaxis()->SetRangeUser(0,0.12);
+    gr->GetXaxis()->SetTitle("Radioactive Source");
+    for(int i=0;i<NSource;i++){
+        int delta=2;
+        gr->GetXaxis()->ChangeLabel(delta*i+1,-1,-1,-1,-1,-1,sources[i]);
+        for(int j=2;j<=delta;j++){
+            gr->GetXaxis()->ChangeLabel(delta*i+j,-1,0.);
+        }
+    }
+
+    return gr;
+}

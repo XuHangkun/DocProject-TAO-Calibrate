@@ -41,6 +41,7 @@
 #define MULTITAORUNDATA 
 
 #include "RadioActiveSource.h"
+#include "TGraphErrors.h"
 #include "TAORunData.h"
 #include <string>
 #include <vector>
@@ -71,13 +72,15 @@ private:
 
     //MCShape function for fit
     TF1* tfTotalMCShape;
+
+    //initialize the tree
+    void Initialize(std::vector<std::string> inSources,int Nfile,std::vector<std::string> dataSubPath);
+
     
-
-
     
 public:
-    MultiTAORunData(std::vector<std::string> inSources,int Nfile);
-    MultiTAORunData(std::string inSources[], int N,int NFile);
+    MultiTAORunData(std::vector<std::string> inSources,std::vector<std::string> dataFiles,int Nfile);
+    MultiTAORunData(std::string inSources[], int N,std::string dataFiles[],int NFile);
     ~MultiTAORunData();
 
     //MCShape function to fit total PE spectrum of multi. sources
@@ -89,8 +92,25 @@ public:
     void  ASBkg(float time=500);
     TAORunData*  GetTAORunData(std::string name);
     TAORunData*  GetTAORunData(int index);
+
+    /*Update hist*/
+    //paramas:
+    //  syn: updata the total pe histograms in taorundatas
+    void UpdateTotalPEHist(bool syn=true);
+    void UpdateTotalPEHist(float xmin,float xmax,int NBins,bool syn=true);
+    void UpdateTotalPEHist(int NBins,float* bins,bool syn=true);
+
+    //Add K40 and Co60 Spectrum : For separate Fitting!
+    void AddK40Co60Bkg(float time=5000);
+
+    //Fill total PE into total PE histogram
     void FillTotalPESpectrum();
+
+    //Fit total PE histogram use tfMCShape
     void FitTotalPESprectrum();
+
+    //Get Fitting Bias
+    TGraphErrors* GetFittingBias();
 
     
 

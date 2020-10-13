@@ -180,6 +180,36 @@ main.C.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.C.s
 .PHONY : main.C.s
 
+src/AcrylicBarStrategy.o: src/AcrylicBarStrategy.cpp.o
+
+.PHONY : src/AcrylicBarStrategy.o
+
+# target to build an object file
+src/AcrylicBarStrategy.cpp.o:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/AcrylicBarStrategy.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/AcrylicBarStrategy.cpp.o
+.PHONY : src/AcrylicBarStrategy.cpp.o
+
+src/AcrylicBarStrategy.i: src/AcrylicBarStrategy.cpp.i
+
+.PHONY : src/AcrylicBarStrategy.i
+
+# target to preprocess a source file
+src/AcrylicBarStrategy.cpp.i:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/AcrylicBarStrategy.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/AcrylicBarStrategy.cpp.i
+.PHONY : src/AcrylicBarStrategy.cpp.i
+
+src/AcrylicBarStrategy.s: src/AcrylicBarStrategy.cpp.s
+
+.PHONY : src/AcrylicBarStrategy.s
+
+# target to generate assembly for a file
+src/AcrylicBarStrategy.cpp.s:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/AcrylicBarStrategy.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/AcrylicBarStrategy.cpp.s
+.PHONY : src/AcrylicBarStrategy.cpp.s
+
 src/GeneralFunction.o: src/GeneralFunction.cpp.o
 
 .PHONY : src/GeneralFunction.o
@@ -270,6 +300,36 @@ src/NonLinearCalibration.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/NonLinearCalibration.cpp.s
 .PHONY : src/NonLinearCalibration.cpp.s
 
+src/Nonuniformity.o: src/Nonuniformity.cpp.o
+
+.PHONY : src/Nonuniformity.o
+
+# target to build an object file
+src/Nonuniformity.cpp.o:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/Nonuniformity.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Nonuniformity.cpp.o
+.PHONY : src/Nonuniformity.cpp.o
+
+src/Nonuniformity.i: src/Nonuniformity.cpp.i
+
+.PHONY : src/Nonuniformity.i
+
+# target to preprocess a source file
+src/Nonuniformity.cpp.i:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/Nonuniformity.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Nonuniformity.cpp.i
+.PHONY : src/Nonuniformity.cpp.i
+
+src/Nonuniformity.s: src/Nonuniformity.cpp.s
+
+.PHONY : src/Nonuniformity.s
+
+# target to generate assembly for a file
+src/Nonuniformity.cpp.s:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/Nonuniformity.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/Nonuniformity.cpp.s
+.PHONY : src/Nonuniformity.cpp.s
+
 src/RadioActiveSource.o: src/RadioActiveSource.cpp.o
 
 .PHONY : src/RadioActiveSource.o
@@ -329,6 +389,36 @@ src/RunData.cpp.s:
 	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/RunData.cpp.s
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/RunData.cpp.s
 .PHONY : src/RunData.cpp.s
+
+src/SiPM.o: src/SiPM.cpp.o
+
+.PHONY : src/SiPM.o
+
+# target to build an object file
+src/SiPM.cpp.o:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/SiPM.cpp.o
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SiPM.cpp.o
+.PHONY : src/SiPM.cpp.o
+
+src/SiPM.i: src/SiPM.cpp.i
+
+.PHONY : src/SiPM.i
+
+# target to preprocess a source file
+src/SiPM.cpp.i:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/SiPM.cpp.i
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SiPM.cpp.i
+.PHONY : src/SiPM.cpp.i
+
+src/SiPM.s: src/SiPM.cpp.s
+
+.PHONY : src/SiPM.s
+
+# target to generate assembly for a file
+src/SiPM.cpp.s:
+	$(MAKE) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/src/SiPM.cpp.s
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/SiPM.cpp.s
+.PHONY : src/SiPM.cpp.s
 
 src/TAORunData.o: src/TAORunData.cpp.o
 
@@ -433,6 +523,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/AcrylicBarStrategy.o"
+	@echo "... src/AcrylicBarStrategy.i"
+	@echo "... src/AcrylicBarStrategy.s"
 	@echo "... src/GeneralFunction.o"
 	@echo "... src/GeneralFunction.i"
 	@echo "... src/GeneralFunction.s"
@@ -442,12 +535,18 @@ help:
 	@echo "... src/NonLinearCalibration.o"
 	@echo "... src/NonLinearCalibration.i"
 	@echo "... src/NonLinearCalibration.s"
+	@echo "... src/Nonuniformity.o"
+	@echo "... src/Nonuniformity.i"
+	@echo "... src/Nonuniformity.s"
 	@echo "... src/RadioActiveSource.o"
 	@echo "... src/RadioActiveSource.i"
 	@echo "... src/RadioActiveSource.s"
 	@echo "... src/RunData.o"
 	@echo "... src/RunData.i"
 	@echo "... src/RunData.s"
+	@echo "... src/SiPM.o"
+	@echo "... src/SiPM.i"
+	@echo "... src/SiPM.s"
 	@echo "... src/TAORunData.o"
 	@echo "... src/TAORunData.i"
 	@echo "... src/TAORunData.s"

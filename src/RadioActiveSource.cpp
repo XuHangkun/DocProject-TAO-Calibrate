@@ -6,49 +6,117 @@
 #include <iostream>
 #include "TF1.h"
 
-RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCalibHeight)
+RadioActiveSource::RadioActiveSource(std::string inSource,float calibHeight)
 {
 
     source=inSource;
-    calibHeight=inCalibHeight;
-    NFile=inNFile;
-    if(source.find("Ge68")!=std::string::npos || source.find("ge68")!=std::string::npos)
-    {
-        gammaEnergy=0.511*2;   //MeV
-    }else if (source.find("Cs137")!=std::string::npos || source.find("cs137")!=std::string::npos)
-    {
-        gammaEnergy=0.6617;   //MeV   
-    }else if (source.find("Mn54")!=std::string::npos || source.find("mn54")!=std::string::npos)
-    {
-        gammaEnergy=0.835;   //MeV   
-    }else if (source.find("K40")!=std::string::npos || source.find("k40")!=std::string::npos)
-    {
-        gammaEnergy=1.461;   //MeV   
-    }else if (source.find("Co60")!=std::string::npos || source.find("co60")!=std::string::npos)
-    {
-        gammaEnergy=2.50574;   //MeV   
-    }else
-    {
-        gammaEnergy=0;
-    }
+    calibPosition.SetX(0.);
+    calibPosition.SetY(0.);
+    calibPosition.SetZ(calibHeight);
+    QuerySourceKinetic();
     
     //initial fit parameters
     NPars=4;
-    XMin=0.36*gammaEnergy*GAMMALY;
-    XMax=1.2*gammaEnergy*GAMMALY;
-    NBins=200;
     initialAmp=0;
     initialMean=0;
     initialSigma=0;
     initialELeapFrac=0;
     matchMean=0;
-    ReadInitialFitPars();   //read from xml file
-    std::stringstream fmt;
-    fmt<<ANATOP<<"/input/ELeapSpec/"<<source<<"_"<<calibHeight<<"mm_EleapSpec.txt";
-    gr_ELeap=new TGraph(fmt.str().c_str());
 
     //create tfMCShape and initialize the parameters
-    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*gammaEnergy*GAMMALY,1.2*gammaEnergy*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
+    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*kinetic*GAMMALY,1.2*kinetic*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
+    tfMCShape->SetParameter(0,initialAmp);
+    tfMCShape->SetParName(0,"Amplitude");
+    tfMCShape->SetParameter(1,initialMean);
+    tfMCShape->SetParName(1,"Gaus_Mean");
+    tfMCShape->SetParameter(2,initialSigma);
+    tfMCShape->SetParName(2,"Gaus_Sigma");
+    tfMCShape->SetParameter(3,initialELeapFrac);
+    tfMCShape->SetParName(3,"ELeapFrac.");
+
+}
+
+RadioActiveSource::RadioActiveSource(std::string inSource,float inKinetic,float calibHeight)
+{
+
+    source=inSource;
+    calibPosition.SetX(0.);
+    calibPosition.SetY(0.);
+    calibPosition.SetZ(calibHeight);
+    kinetic=inKinetic;
+    
+    //initial fit parameters
+    NPars=4;
+    initialAmp=0;
+    initialMean=0;
+    initialSigma=0;
+    initialELeapFrac=0;
+    matchMean=0;
+
+    //create tfMCShape and initialize the parameters
+    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*kinetic*GAMMALY,1.2*kinetic*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
+    tfMCShape->SetParameter(0,initialAmp);
+    tfMCShape->SetParName(0,"Amplitude");
+    tfMCShape->SetParameter(1,initialMean);
+    tfMCShape->SetParName(1,"Gaus_Mean");
+    tfMCShape->SetParameter(2,initialSigma);
+    tfMCShape->SetParName(2,"Gaus_Sigma");
+    tfMCShape->SetParameter(3,initialELeapFrac);
+    tfMCShape->SetParName(3,"ELeapFrac.");
+
+}
+
+RadioActiveSource::RadioActiveSource(std::string inSource,TVector3 inCalibPos)
+{
+
+    source=inSource;
+    calibPosition.SetX(inCalibPos.X());
+    calibPosition.SetY(inCalibPos.Y());
+    calibPosition.SetZ(inCalibPos.Z());
+    QuerySourceKinetic();
+    
+
+    //initial fit parameters
+    NPars=4;
+    initialAmp=0;
+    initialMean=0;
+    initialSigma=0;
+    initialELeapFrac=0;
+    matchMean=0;
+
+    //create tfMCShape and initialize the parameters
+    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*kinetic*GAMMALY,1.2*kinetic*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
+    tfMCShape->SetParameter(0,initialAmp);
+    tfMCShape->SetParName(0,"Amplitude");
+    tfMCShape->SetParameter(1,initialMean);
+    tfMCShape->SetParName(1,"Gaus_Mean");
+    tfMCShape->SetParameter(2,initialSigma);
+    tfMCShape->SetParName(2,"Gaus_Sigma");
+    tfMCShape->SetParameter(3,initialELeapFrac);
+    tfMCShape->SetParName(3,"ELeapFrac.");
+
+}
+
+RadioActiveSource::RadioActiveSource(std::string inSource,float inKinetic,TVector3 inCalibPos)
+{
+
+    source=inSource;
+    calibPosition.SetX(inCalibPos.X());
+    calibPosition.SetY(inCalibPos.Y());
+    calibPosition.SetZ(inCalibPos.Z());
+    kinetic=inKinetic;
+    
+
+    //initial fit parameters
+    NPars=4;
+    initialAmp=0;
+    initialMean=0;
+    initialSigma=0;
+    initialELeapFrac=0;
+    matchMean=0;
+
+    //create tfMCShape and initialize the parameters
+    tfMCShape = new TF1("MCShape",this,&RadioActiveSource::MCShape,0.36*kinetic*GAMMALY,1.2*kinetic*1.2,NPars,"RadioActiveSource","MCShape");   // create TF1 class.
     tfMCShape->SetParameter(0,initialAmp);
     tfMCShape->SetParName(0,"Amplitude");
     tfMCShape->SetParameter(1,initialMean);
@@ -63,16 +131,19 @@ RadioActiveSource::RadioActiveSource(std::string inSource,int inNFile,int inCali
 RadioActiveSource::~RadioActiveSource()
 {
     delete gr_ELeap;
+    delete tfMCShape;
 }
 
 #include "TXMLEngine.h"
-void RadioActiveSource::ReadInitialFitPars()
+bool RadioActiveSource::ReadInitialFitPars()
 {
     using namespace std;
     
     std::string lowSource=source;
     for(int i=0;i<lowSource.size();i++) lowSource[i]=tolower(lowSource[i]);
     std::string xmlFile=ANATOP+Form("/input/xml/%sfitpars.xml",lowSource.c_str());
+    //cout<<xmlFile<<endl;
+    if ( access(xmlFile.c_str(),F_OK)==(-1) ) return false;
     TXMLEngine xml;
     XMLDocPointer_t xmldoc=xml.ParseFile(xmlFile.c_str());
     XMLNodePointer_t node=xml.DocGetRootElement(xmldoc);     //root Node
@@ -80,7 +151,9 @@ void RadioActiveSource::ReadInitialFitPars()
     //Find Source Node
     
     while(strcmp(xml.GetNodeName(node),"Source") != 0 ){
+        cout<<xml.GetNodeName(node)<<endl;
         node = xml.GetChild(node);
+        cout<<xml.GetNodeName(node)<<endl;
         if( node == 0 ){
             break;
         }
@@ -94,16 +167,23 @@ void RadioActiveSource::ReadInitialFitPars()
     while(node != 0){
         XMLAttrPointer_t attr=xml.GetFirstAttr(node);
 
-        //Find CalibHeight Attribute
+        //Find calibPosition.Z() Attribute
+        float tmp_x=1;
+        float tmp_y=1;
+        float tmp_z=1;
         while(attr != 0){
-            if(strcmp(xml.GetAttrName(attr),"CalibHeight") == 0){
-                break;
-            }else{
-                attr = xml.GetNextAttr(attr);
+            //cout<<xml.GetAttrName(attr)<<"\t"<<xml.GetAttrValue(attr)<<endl;
+            if(strcmp(xml.GetAttrName(attr),"CalibPosZ") == 0){
+                tmp_z=atof(xml.GetAttrValue(attr));
+            }else if(strcmp(xml.GetAttrName(attr),"CalibPosX") == 0){
+                tmp_x=atof(xml.GetAttrValue(attr));
+            }else if(strcmp(xml.GetAttrName(attr),"CalibPosY") == 0){
+                tmp_y=atof(xml.GetAttrValue(attr));
             }
+            attr = xml.GetNextAttr(attr);
         }
-
-        if(atoi(xml.GetAttrValue(attr)) == calibHeight){
+        
+        if(calibPosition.X()==tmp_x && calibPosition.Y()==tmp_y && calibPosition.Z()==tmp_z){
             break;
         }else
         {
@@ -132,6 +212,25 @@ void RadioActiveSource::ReadInitialFitPars()
     }
     
     xml.FreeDoc(xmldoc);   
+
+    //Read Energy Leap Spectrum
+    std::stringstream fmt;
+    fmt<<ANATOP<<"/input/ELeapSpec/"<<source<<"_"<<calibPosition.Z()<<"mm_EleapSpec.txt";
+    //std::cout<<fmt.str()<<std::endl;
+    gr_ELeap=new TGraph(fmt.str().c_str());
+
+    //Initialze the parameters of fitting function
+    tfMCShape->SetParameter(0,initialAmp);
+    tfMCShape->SetParName(0,"Amplitude");
+    tfMCShape->SetParameter(1,initialMean);
+    tfMCShape->SetParName(1,"Gaus_Mean");
+    tfMCShape->SetParameter(2,initialSigma);
+    tfMCShape->SetParName(2,"Gaus_Sigma");
+    tfMCShape->SetParameter(3,initialELeapFrac);
+    tfMCShape->SetParName(3,"ELeapFrac.");
+    cout<<"Amp: "<<initialAmp<<"\tMean:"<<initialMean<<"\tSigma"<<initialSigma<<"\tELeap"<<initialELeapFrac<<"\tMatchMean:"<<matchMean<<std::endl;
+
+    return true;
 }
 
 double RadioActiveSource::Gaus(double* x,double* par)
@@ -159,27 +258,35 @@ double RadioActiveSource::MCShape(double* x,double* par)
 }
 
 
-std::vector<std::string> RadioActiveSource::GetFileNames()
-{
-    using std::stringstream;
-    std::vector<std::string> tmp_fileNames(0);
-    for(int i=0;i<NFile;i++){
-        stringstream fmt;
-        fmt<<DATATOP<<"/"<<source<<"/data/"<<source<<"_"<<calibHeight<<"mm_v"<<i<<".root";
-        tmp_fileNames.push_back(fmt.str());
-    }
-    return tmp_fileNames;
-}
-
-
-
 
 std::string RadioActiveSource::GetSourceLabel()
 {
     using std::stringstream;
     stringstream fmt;
-    fmt<<source<<"_CalibHeight-"<<calibHeight<<"mm";
+    fmt<<source<<"_Kinetic_"<<kinetic<<"_"<<"X"<<calibPosition.X()<<"_"<<"Y"<<calibPosition.Y()<<"_"<<"Z"<<calibPosition.Z();
     return fmt.str();
+}
+
+void RadioActiveSource::QuerySourceKinetic()
+{
+    if(source.find("Ge68")!=std::string::npos || source.find("ge68")!=std::string::npos)
+    {
+        kinetic=0.511*2;   //MeV
+    }else if (source.find("Cs137")!=std::string::npos || source.find("cs137")!=std::string::npos)
+    {
+        kinetic=0.6617;   //MeV   
+    }else if (source.find("Mn54")!=std::string::npos || source.find("mn54")!=std::string::npos)
+    {
+        kinetic=0.835;   //MeV   
+    }else if (source.find("K40")!=std::string::npos || source.find("k40")!=std::string::npos)
+    {
+        kinetic=1.461;   //MeV   
+    }else if (source.find("Co60")!=std::string::npos || source.find("co60")!=std::string::npos)
+    {
+        kinetic=2.50574;   //MeV   
+    }else{
+        kinetic=0;
+    }
 }
 
 std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS)
@@ -188,9 +295,8 @@ std::ostream & operator<<(std::ostream & os, const RadioActiveSource radioAS)
     
     os<<"------------------------------------------------------"<<endl;
     os<<"Source Name : "<<radioAS.source<<endl;
-    os<<"Calibration Height : "<<radioAS.calibHeight<<endl;
-    os<<"Gamma Energy : "<<radioAS.gammaEnergy<<"[MeV]"<<endl;
-    os<<"Number of root file : "<<radioAS.NFile<<endl;
+    os<<"Calibration Height : "<<radioAS.calibPosition.Z()<<endl;
+    os<<"Kinetic Energy : "<<radioAS.kinetic<<"[MeV]"<<endl;
     os<<"Initial fitting parameters : "<<endl;
     os<<"                           Amp: "<<radioAS.initialAmp<<endl;
     os<<"                           Mean: "<<radioAS.initialMean<<endl;
